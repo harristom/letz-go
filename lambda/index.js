@@ -39,9 +39,9 @@ const NextBusIntentHandler = {
   },
   async handle(handlerInput) {
     try {
-      //console.log(Date());
+      console.log(Date());
       const buses = await getBus();
-      //console.log(Date());
+      console.log(Date());
       const bus = buses.Departure[0];
       const busName = bus.name.trim();
       const busDest = bus.direction;
