@@ -3,7 +3,7 @@
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
-const moment = require('moment-timezone')
+const moment = require('moment-timezone');
 
 const busStop = 'id=A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129';
 
