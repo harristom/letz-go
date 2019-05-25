@@ -16,7 +16,7 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-const busStop = 'A=1@O=Centre, Cathédrale@X=6,131093@Y=49,610001@U=82@L=200405007@B=1@p=1558685129';
+const busStop = encodeURIComponent('A=1@O=Centre, Cathédrale@X=6,131093@Y=49,610001@U=82@L=200405007@B=1@p=1558685129');
 const getBus = async () => {
   try {
   const { data } = await axios.get(`https://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&id=${busStop}&format=json`);
