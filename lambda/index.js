@@ -23,7 +23,7 @@ const getBus = async () => {
     params: {
       accessId: 'cdt',
       format: 'json',
-      id: ${busStop}
+      id: busStop
     }
   });
     return data;
