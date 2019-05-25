@@ -3,6 +3,7 @@
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
+const moment = require('moment')
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -38,22 +39,18 @@ const NextBusIntentHandler = {
   },
   async handle(handlerInput) {
     try {
-      /*
       const buses = await getBus();
       const bus = buses.Departure[0];
       const busName = bus.name.trim();
       const busDest = bus.direction;
-      var luxTime = new Date().toLocaleString("en-US", {timeZone: "Europe/Luxembourg"});
-      luxTime = new Date(luxTime);
       var busDue = bus.time;
-      if (bus.rtTime) {
-         busDue = bus.rtTime;
+      if (bus.rtDate) {
+         var busDue = bus.rtDate + ' ' + bus.rtTime;
+      } else {
+         var busDue = bus.date + ' ' + bus.time;
       }
-      
-      const speechText = `The ${busName} to <lang xml:lang="fr-FR">${busDest}</lang> is leaving in 1 minute.`;
-      */
-      
-      const speechText = `The time is ` + new Date();
+      var timeRemaining = moment.tz(busDue, 'Europe/Luxembourg').toNow();
+      const speechText = `The ${busName} to <lang xml:lang="fr-FR">${busDest}</lang> is leaving ${busDue}`;
 
       return handlerInput.responseBuilder
         .speak(speechText)
