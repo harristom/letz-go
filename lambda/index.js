@@ -16,9 +16,10 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
+const busStop = 'A=1@O=Verlorenkost, Général Patton@X=6,142194@Y=49,607790@U=82@L=200404030@B=1@p=1558685129;'
 const getBus = async () => {
   try {
-    const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&id=A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129&format=json');
+    const { data } = await axios.get(`https://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&id=${busStop}&format=json`);
     return data;
   } catch (error) {
     console.error('cannot fetch quotes', error);
