@@ -2,10 +2,11 @@
 // Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
+const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
 const axios = require('axios');
 const moment = require('moment-timezone');
 
-const busStop = 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129';
+const busStop = 'A=1@O=Weimershof, Joseph Hackin@X=6,171499@Y=49,630317@U=82@L=200426002@B=1@p=1558685129';
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -44,18 +45,22 @@ const NextBusIntentHandler = {
     async handle(handlerInput) {
         try {
             const buses = await getBus();
-            const bus = buses.Departure[0];
-            const busName = bus.name.trim().replace('Bus','bus');
-            const busDest = bus.direction;
-            var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
-            busDue = moment.tz(busDue, 'Europe/Luxembourg');
-            var timeRemaining;
-            if (busDue.diff(moment(), 'seconds') < 1) {
-                timeRemaining = 'now'
-            } else {
-                timeRemaining = busDue.fromNow();
+            if (buses.length = 0) {
+                speechText = 'Sorry, I didn''t find any buses.';
+            else {   
+                const bus = buses.Departure[0];
+                const busName = bus.name.trim().replace('Bus','bus');
+                const busDest = bus.direction;
+                var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
+                busDue = moment.tz(busDue, 'Europe/Luxembourg');
+                var timeRemaining;
+                if (busDue.diff(moment(), 'seconds') < 1) {
+                    timeRemaining = 'now'
+                } else {
+                    timeRemaining = busDue.fromNow();
+                }
+                const speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
             }
-            const speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .getResponse();
@@ -154,4 +159,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         IntentReflectorHandler) // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
     .addErrorHandlers(
         ErrorHandler)
+    .withPersistenceAdapter(
+        new persistenceAdapter.S3PersistenceAdapter({bucketName:process.env.S3_PERSISTENCE_BUCKET})
+    );
     .lambda();
