@@ -16,7 +16,7 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-const busStop = 'A=1@O=Verlorenkost, Heedekëppchen@X=6,142365@Y=49,604509@U=82@L=200404042@B=1@p=1558685129';
+const busStop = 'A=1@O=Verlorenkost, Général Patton@X=6,142194@Y=49,607790@U=82@L=200404030@B=1@p=1558685129';
 const getBus = async () => {
   try {
   const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
@@ -38,9 +38,22 @@ const NextBusIntentHandler = {
   },
   async handle(handlerInput) {
     try {
+      /*
       const buses = await getBus();
-      const bus = buses.Departure[0]
-      const speechText = `The next bus from <lang xml:lang="fr-FR">${bus.stop}</lang> is the ${bus.name} departing at ${bus.time}.`;
+      const bus = buses.Departure[0];
+      const busName = bus.name.trim();
+      const busDest = bus.direction;
+      var luxTime = new Date().toLocaleString("en-US", {timeZone: "Europe/Luxembourg"});
+      luxTime = new Date(luxTime);
+      var busDue = bus.time;
+      if (bus.rtTime) {
+         busDue = bus.rtTime;
+      }
+      
+      const speechText = `The ${busName} to <lang xml:lang="fr-FR">${busDest}</lang> is leaving in 1 minute.`;
+      */
+      
+      const speechText = `The time is ` + new Date();
 
       return handlerInput.responseBuilder
         .speak(speechText)
@@ -57,7 +70,7 @@ const HelpIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speechText = 'You can say hello to me! How can I help?';
+        const speechText = 'You can ask for the next bus by saying "when is the next bus". Give it a try.';
 
         return handlerInput.responseBuilder
             .speak(speechText)
