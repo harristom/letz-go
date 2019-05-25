@@ -54,7 +54,6 @@ const NextBusIntentHandler = {
 
       return handlerInput.responseBuilder
         .speak(speechText)
-        .withSimpleCard('Lux Bus', speechText)
         .getResponse();
     } catch (error) {
       console.error(error);
