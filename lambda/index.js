@@ -2,6 +2,7 @@
 // Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
+const axios = require('axios');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -28,9 +29,12 @@ const HelloWorldIntentHandler = {
             .getResponse();
     }
 };
+const quotesUrl = 'https://gist.githubusercontent.com/ck3g/44afbba3a80270167cedad37bb8114e3/raw/quotes.json';
+
 const randomArrayElement = (array) =>
   array[Math.floor(Math.random() * array.length)];
 
+/*
 const fetchQuotes = () => {
   return new Promise((resolve, reject) => {
     resolve([
@@ -38,6 +42,16 @@ const fetchQuotes = () => {
       { content: "Quote 2", author: "Author 2" }
     ]);
   })
+};
+*/
+
+const fetchQuotes = async () => {
+  try {
+    const { data } = await axios.get(quotesUrl);
+    return data;
+  } catch (error) {
+    console.error('cannot fetch quotes', error);
+  }
 };
 
 const QuoteIntentHandler = {
