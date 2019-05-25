@@ -3,7 +3,7 @@
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
