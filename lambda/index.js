@@ -45,7 +45,7 @@ const NextBusIntentHandler = {
     async handle(handlerInput) {
         try {
             const buses = await getBus();
-            if (buses.length = 0) {
+            if (buses.Departure == null) {
                 speechText = 'Sorry, I didn\'t find any buses.';
             } else {   
                 const bus = buses.Departure[0];
