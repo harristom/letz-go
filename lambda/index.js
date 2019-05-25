@@ -45,6 +45,7 @@ const NextBusIntentHandler = {
     async handle(handlerInput) {
         try {
             const buses = await getBus();
+            var speechText;
             if (buses.Departure == null) {
                 speechText = 'Sorry, I didn\'t find any buses.';
             } else {   
@@ -59,7 +60,7 @@ const NextBusIntentHandler = {
                 } else {
                     timeRemaining = busDue.fromNow();
                 }
-                const speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
+                speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
             }
             return handlerInput.responseBuilder
                 .speak(speechText)
