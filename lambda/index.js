@@ -16,7 +16,7 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-const busStop = 'A=1@O=Verlorenkost, Général Patton@X=6,142194@Y=49,607790@U=82@L=200404030@B=1@p=1558685129;'
+const busStop = 'A=1@O=Verlorenkost, Général Patton@X=6,142194@Y=49,607790@U=82@L=200404030@B=1@p=1558685129';
 const getBus = async () => {
   try {
     const { data } = await axios.get(`https://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&id=${busStop}&format=json`);
