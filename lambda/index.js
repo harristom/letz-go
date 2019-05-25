@@ -46,8 +46,8 @@ const NextBusIntentHandler = {
         try {
             const buses = await getBus();
             if (buses.length = 0) {
-                speechText = 'Sorry, I didn''t find any buses.';
-            else {   
+                speechText = 'Sorry, I didn\'t find any buses.';
+            } else {   
                 const bus = buses.Departure[0];
                 const busName = bus.name.trim().replace('Bus','bus');
                 const busDest = bus.direction;
