@@ -5,6 +5,8 @@ const Alexa = require('ask-sdk-core');
 const axios = require('axios');
 const moment = require('moment-timezone')
 
+const busStop = 'id=A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129';
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
@@ -17,7 +19,7 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-const busStop = 'A=1@O=Verlorenkost, Général Patton@X=6,142194@Y=49,607790@U=82@L=200404030@B=1@p=1558685129';
+
 const getBus = async () => {
   try {
   const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
@@ -32,6 +34,7 @@ const getBus = async () => {
     console.error('cannot fetch departure board', error);
   }
 };
+
 const NextBusIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -58,6 +61,7 @@ const NextBusIntentHandler = {
     }
   },
 };
+
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -72,6 +76,7 @@ const HelpIntentHandler = {
             .getResponse();
     }
 };
+
 const CancelAndStopIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -85,6 +90,7 @@ const CancelAndStopIntentHandler = {
             .getResponse();
     }
 };
+
 const SessionEndedRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
