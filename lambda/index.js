@@ -45,7 +45,7 @@ const NextBusIntentHandler = {
       const busDest = bus.direction;
       var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
       var timeRemaining = moment.tz(busDue, 'Europe/Luxembourg').toNow();
-      const speechText = `The ${busName} to <lang xml:lang="fr-FR">${busDest}</lang> is leaving ${busDue}`;
+      const speechText = `The ${busName} to <lang xml:lang="fr-FR">${busDest}</lang> is leaving ${timeRemaining}`;
 
       return handlerInput.responseBuilder
         .speak(speechText)
