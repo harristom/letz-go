@@ -26,6 +26,7 @@ const getBus = async () => {
             params: {
                 accessId: 'cdt',
                 format: 'json',
+                filterEquiv: 0,
                 id: busStop
             }
         });
@@ -54,7 +55,7 @@ const NextBusIntentHandler = {
             } else {
                 timeRemaining = busDue.fromNow();
             }
-            const speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining}`;
+            const speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .getResponse();
