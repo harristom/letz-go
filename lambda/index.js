@@ -28,6 +28,38 @@ const HelloWorldIntentHandler = {
             .getResponse();
     }
 };
+const randomArrayElement = (array) =>
+  array[Math.floor(Math.random() * array.length)];
+
+const fetchQuotes = () => {
+  return new Promise((resolve, reject) => {
+    resolve([
+      { content: "Quote 1", author: "Author 1" },
+      { content: "Quote 2", author: "Author 2" }
+    ]);
+  })
+};
+
+const QuoteIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'QuoteIntent';
+  },
+  async handle(handlerInput) {
+    try {
+      const quotes = await fetchQuotes();
+      const quote = randomArrayElement(quotes);
+      const speechText = `${quote.content} ${quote.author}.`;
+
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .withSimpleCard('Inspiration', speechText)
+        .getResponse();
+    } catch (error) {
+      console.error(error);
+    }
+  },
+};
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -109,6 +141,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         HelloWorldIntentHandler,
+        QuoteIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
