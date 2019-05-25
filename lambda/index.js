@@ -9,7 +9,7 @@ const LaunchRequestHandler = {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speechText = 'Welcome, you can say Hello or Help. Which would you like to try?';
+        const speechText = 'Welcome, you can try asking "when is the next bus". Give it a go.';
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
@@ -33,7 +33,7 @@ const NextBusIntentHandler = {
     try {
       const buses = await getBus();
       const bus = buses.Departure[0]
-      const speechText = `The next bus from ${bus.stop} is the ${bus.name} departing at ${bus.time}.`;
+      const speechText = `The next bus from <lang xml:lang="fr-FR">${bus.stop}</lang> is the ${bus.name} departing at ${bus.time}.`;
 
       return handlerInput.responseBuilder
         .speak(speechText)
