@@ -16,19 +16,6 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-const HelloWorldIntentHandler = {
-    canHandle(handlerInput) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'HelloWorldIntent';
-    },
-    handle(handlerInput) {
-        const speechText = 'Hello World!';
-        return handlerInput.responseBuilder
-            .speak(speechText)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-            .getResponse();
-    }
-};
 const getBus = async () => {
   try {
     const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&id=A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129&format=json');
@@ -37,20 +24,20 @@ const getBus = async () => {
     console.error('cannot fetch quotes', error);
   }
 };
-const QuoteIntentHandler = {
+const NextBusIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'QuoteIntent';
+      && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
   },
   async handle(handlerInput) {
     try {
       const buses = await getBus();
-      const bus = buses.Departure[0].name
-      const speechText = `The next bus is the ${bus}.`;
+      const bus = buses.Departure[0]
+      const speechText = `The next bus from ${bus.stop} is the ${bus.name} departing at ${bus.time}.`;
 
       return handlerInput.responseBuilder
         .speak(speechText)
-        .withSimpleCard('Inspiration', speechText)
+        .withSimpleCard('Lux Bus', speechText)
         .getResponse();
     } catch (error) {
       console.error(error);
@@ -137,8 +124,7 @@ const ErrorHandler = {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        HelloWorldIntentHandler,
-        QuoteIntentHandler,
+        NextBusIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
