@@ -44,7 +44,7 @@ const NextBusIntentHandler = {
         try {
             const buses = await getBus();
             const bus = buses.Departure[0];
-            const busName = bus.name.trim();
+            const busName = bus.name.trim().replace('Bus','bus');
             const busDest = bus.direction;
             var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
             busDue = moment.tz(busDue, 'Europe/Luxembourg');
