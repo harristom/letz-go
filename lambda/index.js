@@ -29,31 +29,14 @@ const HelloWorldIntentHandler = {
             .getResponse();
     }
 };
-const quotesUrl = 'https://gist.githubusercontent.com/ck3g/44afbba3a80270167cedad37bb8114e3/raw/quotes.json';
-
-const randomArrayElement = (array) =>
-  array[Math.floor(Math.random() * array.length)];
-
-/*
-const fetchQuotes = () => {
-  return new Promise((resolve, reject) => {
-    resolve([
-      { content: "Quote 1", author: "Author 1" },
-      { content: "Quote 2", author: "Author 2" }
-    ]);
-  })
-};
-*/
-
-const fetchQuotes = async () => {
+const getBus = async () => {
   try {
-    const { data } = await axios.get(quotesUrl);
+    const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&id=A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129&format=json');
     return data;
   } catch (error) {
     console.error('cannot fetch quotes', error);
   }
 };
-
 const QuoteIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -61,9 +44,9 @@ const QuoteIntentHandler = {
   },
   async handle(handlerInput) {
     try {
-      const quotes = await fetchQuotes();
-      const quote = randomArrayElement(quotes);
-      const speechText = `${quote.content} ${quote.author}.`;
+      const buses = await getBus();
+      const bus = buses.Departure[0].name
+      const speechText = `The next bus is the ${bus}.`;
 
       return handlerInput.responseBuilder
         .speak(speechText)
