@@ -16,10 +16,16 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
-const busStop = encodeURIComponent('A=1@O=Centre, Cathédrale@X=6,131093@Y=49,610001@U=82@L=200405007@B=1@p=1558685129');
+const busStop = 'A=1@O=Verlorenkost, Heedekëppchen@X=6,142365@Y=49,604509@U=82@L=200404042@B=1@p=1558685129';
 const getBus = async () => {
   try {
-  const { data } = await axios.get(`https://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&id=${busStop}&format=json`);
+  const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
+    params: {
+      accessId: 'cdt',
+      format: 'json',
+      id: ${busStop}
+    }
+  });
     return data;
   } catch (error) {
     console.error('cannot fetch departure board', error);
