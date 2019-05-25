@@ -21,44 +21,41 @@ const LaunchRequestHandler = {
 };
 
 const getBus = async () => {
-  try {
-  const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
-    params: {
-      accessId: 'cdt',
-      format: 'json',
-      id: busStop
+    try {
+        const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
+            params: {
+                accessId: 'cdt',
+                format: 'json',
+                id: busStop
+            }
+        });
+        return data;
+    } catch (error) {
+        console.error('cannot fetch departure board', error);
     }
-  });
-    return data;
-  } catch (error) {
-    console.error('cannot fetch departure board', error);
-  }
 };
 
 const NextBusIntentHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
-  },
-  async handle(handlerInput) {
-    try {
-      console.log(Date());
-      const buses = await getBus();
-      console.log(Date());
-      const bus = buses.Departure[0];
-      const busName = bus.name.trim();
-      const busDest = bus.direction;
-      var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
-      var timeRemaining = moment.tz(busDue, 'Europe/Luxembourg').fromNow();
-      const speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining}`;
-
-      return handlerInput.responseBuilder
-        .speak(speechText)
-        .getResponse();
-    } catch (error) {
-      console.error(error);
-    }
-  },
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
+    },
+    async handle(handlerInput) {
+        try {
+            const buses = await getBus();
+            const bus = buses.Departure[0];
+            const busName = bus.name.trim();
+            const busDest = bus.direction;
+            var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;  
+            var timeRemaining = moment.tz(busDue, 'Europe/Luxembourg').fromNow();
+            const speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining}`;
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .getResponse();
+        } catch (error) {
+          console.error(error);
+        }
+    },
 };
 
 const HelpIntentHandler = {
