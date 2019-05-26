@@ -21,7 +21,7 @@ const LaunchRequestHandler = {
     }
 };
 
-const getBus = async () => {
+const getBus = async (busStop) => {
     try {
         const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
             params: {
@@ -43,8 +43,15 @@ const NextBusIntentHandler = {
         && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
     },
     async handle(handlerInput) {
+        /*
+        const attributesManager = handlerInput.attributesManager;
+        const s3Attributes = await attributesManager.getPersistentAttributes() || {};
+        console.log('s3Attributes is: ', s3Attributes);
+        const counter = s3Attributes.hasOwnProperty('counter')? s3Attributes.counter : 0;
+        let speechOutput = `Hi there, Hello World! Your counter is ${counter}`;
+        */    
         try {
-            const buses = await getBus();
+            const buses = await getBus(busStop);
             var speechText;
             if (buses.Departure == null) {
                 speechText = 'Sorry, I didn\'t find any buses.';
