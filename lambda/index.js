@@ -54,9 +54,10 @@ const NextBusIntentHandler = {
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         console.log('s3Attributes is: ', s3Attributes);
         const faveStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129' ;
-        let speechOutput = `Your saved stop is ${faveStop}`;
+        let speechText = `Your saved stop is ${faveStop}`;
           
         try {
+            /*
             const buses = await getBus(busStop);
             var speechText;
             if (buses.Departure === null) {
@@ -75,6 +76,7 @@ const NextBusIntentHandler = {
                 }
                 speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
             }
+            */
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .getResponse();
