@@ -5,26 +5,14 @@ const Alexa = require('ask-sdk-core');
 const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
 const axios = require('axios');
 const moment = require('moment-timezone');
-const {
-  getRequestType,
-  getIntentName,
-  getSlotValue,
-  getDialogState,
-} = require('ask-sdk-core');
-const busStop = 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129';
 
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
-    async handle(handlerInput) {
+    handle(handlerInput) {
         
-        const attributesManager = handlerInput.attributesManager;
-        let s3Attributes = {"faveStop": 'A=1@O=Verlorenkost, Général Patton@X=6,142194@Y=49,607790@U=82@L=200404030@B=1@p=1558685129'};
-        attributesManager.setPersistentAttributes(s3Attributes);
-        await attributesManager.savePersistentAttributes();
-
         const speechText = 'Welcome, you can try asking "when is the next bus". Give it a go.';
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -55,27 +43,25 @@ const NextBusIntentHandler = {
         && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
     },
     async handle(handlerInput) {
-        
-        /*
-        const attributesManager = handlerInput.attributesManager;
-        const s3Attributes = await attributesManager.getPersistentAttributes() || {};
-        console.log('s3Attributes is: ', s3Attributes);
-        const faveStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129' ;
-        let speechText = `Your saved stop is ${faveStop}`;
-        */
-        
-        let speechText = getSlotValue(handlerInput.requestEnvelope, 'BusStop').resolved;
+
+        let busStop;
+
+        if (handlerInput.requestEnvelope.request.intent.slots.busStop.resolutionsPerAuthority[0].values[0].value.name) {
+            busStop = handlerInput.requestEnvelope.request.intent.slots.busStop.resolutionsPerAuthority[0].values[0].value.name;
+        } else {
+            const attributesManager = handlerInput.attributesManager;
+            const s3Attributes = await attributesManager.getPersistentAttributes() || {};
+            busStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'Luxembourg, Gare Centrale' ;
+        }
           
-        try {
-            /*
+        try {            
             const buses = await getBus(busStop);
             var speechText;
             if (buses.Departure === null) {
-                speechText = 'Sorry, I didn\'t find any buses.';
+                speechText = `Sorry, I couldn't find any buses for ${busStop}`;
             } else {   
                 const bus = buses.Departure[0];
                 const busName = bus.name.trim().replace('Bus','bus');
-                const busDest = bus.direction;
                 var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
                 busDue = moment.tz(busDue, 'Europe/Luxembourg');
                 var timeRemaining;
@@ -84,9 +70,8 @@ const NextBusIntentHandler = {
                 } else {
                     timeRemaining = busDue.fromNow();
                 }
-                speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
-            }
-            */
+                speechText = `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
+            }            
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .getResponse();
