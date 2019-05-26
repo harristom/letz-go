@@ -28,7 +28,7 @@ const getBus = async (busStop) => {
                 accessId: 'cdt',
                 format: 'json',
                 filterEquiv: 0,
-                id: busStop
+                id: 'A=1@O=' + busStop
             }
         });
         return data;
@@ -46,7 +46,7 @@ const NextBusIntentHandler = {
 
         let busStop;
 
-        if (handlerInput.requestEnvelope.request.intent.slots.busStop.resolutions.resolutionsPerAuthority[0].values[0].value.hasOwnProperty('name')) {
+    if (handlerInput.requestEnvelope.request.intent.slots.busStop.resolutions.resolutionsPerAuthority[0].values[0].value.hasOwnProperty('name'}) {
             busStop = handlerInput.requestEnvelope.request.intent.slots.busStop.resolutions.resolutionsPerAuthority[0].values[0].value.name;
         } else {
             const attributesManager = handlerInput.attributesManager;
