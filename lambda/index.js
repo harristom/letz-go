@@ -11,7 +11,6 @@ const {
   getSlotValue,
   getDialogState,
 } = require('ask-sdk-core');
-
 const busStop = 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129';
 
 
@@ -65,7 +64,7 @@ const NextBusIntentHandler = {
         let speechText = `Your saved stop is ${faveStop}`;
         */
         
-        let speechText = getSlotValue(handlerInput.requestEnvelope, 'BusStop');
+        let speechText = getSlotValue(handlerInput.requestEnvelope, 'BusStop').resolved;
           
         try {
             /*
