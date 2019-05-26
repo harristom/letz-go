@@ -5,14 +5,20 @@ const Alexa = require('ask-sdk-core');
 const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
 const axios = require('axios');
 const moment = require('moment-timezone');
-
 const busStop = 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129';
+
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
+        
+        const attributesManager = handlerInput.attributesManager;
+        let s3Attributes = {"faveStop": 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129'};
+        attributesManager.setPersistentAttributes(s3Attributes);
+        await attributesManager.savePersistentAttributes();
+
         const speechText = 'Welcome, you can try asking "when is the next bus". Give it a go.';
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -47,11 +53,11 @@ const NextBusIntentHandler = {
         const attributesManager = handlerInput.attributesManager;
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         console.log('s3Attributes is: ', s3Attributes);
-        const myBus = s3Attributes.hasOwnProperty('myBus')? s3Attributes.myBus : 'Central' ;
-        let speechText = `Hi there, Hello World! Your counter is ${myBus}`;
+        const faveStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129' ;
+        let speechOutput = `Your saved stop is ${faveStop}`;
           
         try {
-            /*const buses = await getBus(busStop);
+            const buses = await getBus(busStop);
             var speechText;
             if (buses.Departure === null) {
                 speechText = 'Sorry, I didn\'t find any buses.';
@@ -68,7 +74,7 @@ const NextBusIntentHandler = {
                     timeRemaining = busDue.fromNow();
                 }
                 speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
-            }*/
+            }
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .getResponse();
