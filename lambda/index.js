@@ -46,7 +46,7 @@ const NextBusIntentHandler = {
 
         let busStop;
 
-        if (handlerInput.requestEnvelope.request.intent.slots.busStop.resolutionsPerAuthority[0].values[0].value.name) {
+        if (handlerInput.requestEnvelope.request.intent.slots.busStop.resolutionsPerAuthority[0].values[0].value.name.hasOwnProperty) {
             busStop = handlerInput.requestEnvelope.request.intent.slots.busStop.resolutionsPerAuthority[0].values[0].value.name;
         } else {
             const attributesManager = handlerInput.attributesManager;
