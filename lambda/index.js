@@ -43,11 +43,11 @@ const NextBusIntentHandler = {
         && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
     },
     async handle(handlerInput) {
-
         let busStop;
-
-    if (handlerInput.requestEnvelope.request.intent.slots.busStop.resolutions.resolutionsPerAuthority[0].values[0].value.hasOwnProperty('name')) {
-            busStop = handlerInput.requestEnvelope.request.intent.slots.busStop.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
+        const slotValues = getSlotValues(filledSlots);
+        if (slotValues.busStop.isValidated) {
+            busStop = slotValues.busStop.resolved;
         } else {
             const attributesManager = handlerInput.attributesManager;
             const s3Attributes = await attributesManager.getPersistentAttributes() || {};
@@ -156,6 +156,48 @@ const ErrorHandler = {
             .getResponse();
     }
 };
+
+function getSlotValues(filledSlots) {
+  const slotValues = {};
+
+  console.log(`The filled slots: ${JSON.stringify(filledSlots)}`);
+  Object.keys(filledSlots).forEach((item) => {
+    const name = filledSlots[item].name;
+
+    if (filledSlots[item] &&
+      filledSlots[item].resolutions &&
+      filledSlots[item].resolutions.resolutionsPerAuthority[0] &&
+      filledSlots[item].resolutions.resolutionsPerAuthority[0].status &&
+      filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) {
+      switch (filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) {
+        case 'ER_SUCCESS_MATCH':
+          slotValues[name] = {
+            synonym: filledSlots[item].value,
+            resolved: filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.name,
+            isValidated: true,
+          };
+          break;
+        case 'ER_SUCCESS_NO_MATCH':
+          slotValues[name] = {
+            synonym: filledSlots[item].value,
+            resolved: filledSlots[item].value,
+            isValidated: false,
+          };
+          break;
+        default:
+          break;
+      }
+    } else {
+      slotValues[name] = {
+        synonym: filledSlots[item].value,
+        resolved: filledSlots[item].value,
+        isValidated: false,
+      };
+    }
+  }, this);
+
+  return slotValues;
+}
 
 // This handler acts as the entry point for your skill, routing all request and response
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
