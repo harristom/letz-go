@@ -43,13 +43,13 @@ const NextBusIntentHandler = {
         && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
     },
     async handle(handlerInput) {
-        /*
+        
         const attributesManager = handlerInput.attributesManager;
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         console.log('s3Attributes is: ', s3Attributes);
-        const counter = s3Attributes.hasOwnProperty('counter')? s3Attributes.counter : 0;
-        let speechOutput = `Hi there, Hello World! Your counter is ${counter}`;
-        */    
+        const myBus = s3Attributes.hasOwnProperty('myBus')? s3Attributes.myBus : 'Central' ;
+        let speechOutput = `Hi there, Hello World! Your counter is ${myBus}`;
+          
         try {
             const buses = await getBus(busStop);
             var speechText;
