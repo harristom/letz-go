@@ -15,7 +15,7 @@ const LaunchRequestHandler = {
     async handle(handlerInput) {
         
         const attributesManager = handlerInput.attributesManager;
-        let s3Attributes = {"faveStop": 'A=1@O=Luxembourg, Gare Centrale@X=6,133745@Y=49,600625@U=82@L=200405035@B=1@p=1558685129'};
+        let s3Attributes = {"faveStop": 'A=1@O=Verlorenkost, Général Patton@X=6,142194@Y=49,607790@U=82@L=200404030@B=1@p=1558685129'};
         attributesManager.setPersistentAttributes(s3Attributes);
         await attributesManager.savePersistentAttributes();
 
