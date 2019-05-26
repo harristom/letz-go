@@ -48,10 +48,10 @@ const NextBusIntentHandler = {
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         console.log('s3Attributes is: ', s3Attributes);
         const myBus = s3Attributes.hasOwnProperty('myBus')? s3Attributes.myBus : 'Central' ;
-        let speechOutput = `Hi there, Hello World! Your counter is ${myBus}`;
+        let speechText = `Hi there, Hello World! Your counter is ${myBus}`;
           
         try {
-            const buses = await getBus(busStop);
+            /*const buses = await getBus(busStop);
             var speechText;
             if (buses.Departure === null) {
                 speechText = 'Sorry, I didn\'t find any buses.';
@@ -68,7 +68,7 @@ const NextBusIntentHandler = {
                     timeRemaining = busDue.fromNow();
                 }
                 speechText = `The ${busName} to ${busDest} is leaving ${timeRemaining} from ${bus.stop}`;
-            }
+            }*/
             return handlerInput.responseBuilder
                 .speak(speechText)
                 .getResponse();
