@@ -53,7 +53,7 @@ const NextBusIntentHandler = {
         try {
             const buses = await getBus(busStop);
             var speechText;
-            if (buses.Departure == null) {
+            if (buses.Departure === null) {
                 speechText = 'Sorry, I didn\'t find any buses.';
             } else {   
                 const bus = buses.Departure[0];
