@@ -65,7 +65,7 @@ const NextBusIntentHandler = {
         try {            
             const buses = await getBus(busStop);
             var speechText;
-            if (buses.Departure === null) {
+            if (!buses.hasOwnProperty('Departure')) {
                 speechText = `Sorry, I couldn't find any buses for ${busStop}`;
             } else {   
                 const bus = buses.Departure[0];
