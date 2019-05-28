@@ -96,7 +96,7 @@ const SaveStopIntentHandler = {
     },
     async handle(handlerInput) {
         const attributesManager = handlerInput.attributesManager;
-        let s3Attributes = {"faveStop":handlerInput.requestEnvelope.request.intent.slots.busStop.resolutions.resolutionsPerAuthority.values[0].value.name};
+        let s3Attributes = {"faveStop":handlerInput.requestEnvelope.request.intent.slots.busStop.resolutions.resolutionsPerAuthority[0].values[0].value.name};
         attributesManager.setPersistentAttributes(s3Attributes);
         await attributesManager.savePersistentAttributes();
 
