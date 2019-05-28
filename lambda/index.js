@@ -11,9 +11,17 @@ const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
         
-        const speechText = 'Welcome, you can try asking "when is the next bus". Give it a go.';
+        const attributesManager = handlerInput.attributesManager;
+        const s3Attributes = await attributesManager.getPersistentAttributes() || {};
+        let speechText;
+        if (s3Attributes.hasOwnProperty('faveStop')) {
+            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving <lang xml:lang="fr-FR">Gare Centrale</lang>". Or, to check buses from your saved favourite stop, simply "when is the next bus". What would you like to do?';
+        } else {
+            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving <lang xml:lang="fr-FR">Gare Centrale</lang>". Alternatively, you can say "save my stop" to set a favourite bus stop. What would you like to do?';
+        }        
+        
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
@@ -79,6 +87,26 @@ const NextBusIntentHandler = {
           console.error(error);
         }
     },
+};
+
+const SaveStopIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'SaveStopIntent';
+    },
+    async handle(handlerInput) {
+        const attributesManager = handlerInput.attributesManager;
+        let s3Attributes = {"faveStop":handlerInput.requestEnvelope.request.intent.busStop.resolutions.resolutionsPerAuthority.values[0].value.name};
+        attributesManager.setPersistentAttributes(s3Attributes);
+        await attributesManager.savePersistentAttributes();
+
+        let speechText = 'Saved';
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
 };
 
 const HelpIntentHandler = {
