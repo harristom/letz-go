@@ -116,10 +116,11 @@ const SaveStopSlotConfirmationHandler = {
         const slotValues = getSlotValues(filledSlots);
         const busStop = slotValues.busStop;        
         const speechText = `I found ${busStop.resolved}. Is that right?`;
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
-            .addConfirmSlotDirective("busStop")
+            .addConfirmSlotDirective("busStop", currentIntent)
             .getResponse();
     }
 };
@@ -138,7 +139,7 @@ const SaveStopCompleteHandler = {
         attributesManager.setPersistentAttributes(s3Attributes);
         await attributesManager.savePersistentAttributes();
 
-    let speechText = `Thanks, I'll remember that. Next time you ask "when is my bus" I'll assume you're asking about buses from ${slotValues.busStop.resolved} but you can always ask about buses from other stops by saying something like "when is the next bus from Charlys Gare". You can change your saved stop any time you like by saying "change my stop".`;
+    let speechText = `Thanks, I'll remember that. Next time you ask "when is the next bus" I'll assume you're asking about buses from this stop. You can still ask about buses from other stops by saying something like "when is the next bus from Charlys Gare". You can change your saved stop by saying "change my stop".`;
 
         return handlerInput.responseBuilder
             .speak(speechText)
