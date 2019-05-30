@@ -96,10 +96,31 @@ const SaveStopInProgressHandler = {
             && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
     },
     handle(handlerInput) {
-    const currentIntent = handlerInput.requestEnvelope.request.intent;
-    return handlerInput.responseBuilder
-        .addDelegateDirective(currentIntent)
-        .getResponse();
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+        return handlerInput.responseBuilder
+            .addDelegateDirective(currentIntent)
+            .getResponse();
+    }
+};
+
+const SaveStopSlotConfirmationHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'SaveStopIntent'
+            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED'
+            && handlerInput.requestEnvelope.request.slots.busStop.value
+            && handlerInput.requestEnvelope.request.slots.busStop.confirmationStatus === 'NONE';
+    },
+    handle(handlerInput) {
+        const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
+        const slotValues = getSlotValues(filledSlots);
+        const busStop = slotValues.busStop.resolved;
+        const speechText = `I found ${busStop}. Is that right?`;
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .addConfirmSlotDirective("busStop")
+            .getResponse();
     }
 };
 
@@ -252,6 +273,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         NextBusIntentHandler,
         SaveStopCompleteHandler,
+        SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
