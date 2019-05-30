@@ -158,7 +158,6 @@ const SaveStopCompleteHandler = {
 
         return handlerInput.responseBuilder
             .speak(speechText)
-            .reprompt(speechText)
             .getResponse();
     }
 };
