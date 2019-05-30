@@ -108,14 +108,14 @@ const SaveStopSlotConfirmationHandler = {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'SaveStopIntent'
             && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED'
-            && handlerInput.requestEnvelope.request.intent.slots.busStop.value
+            && getSlotValues(handlerInput.requestEnvelope.request.intent.slots).busStop.isValidated
             && handlerInput.requestEnvelope.request.intent.slots.busStop.confirmationStatus === 'NONE';
     },
     handle(handlerInput) {
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
-        const busStop = slotValues.busStop.resolved;
-        const speechText = `I found ${busStop}. Is that right?`;
+        const busStop = slotValues.busStop;        
+        const speechText = `I found ${busStop.resolved}. Is that right?`;
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
