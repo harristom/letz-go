@@ -108,8 +108,8 @@ const SaveStopSlotConfirmationHandler = {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'SaveStopIntent'
             && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED'
-            && handlerInput.requestEnvelope.request.slots.busStop.value
-            && handlerInput.requestEnvelope.request.slots.busStop.confirmationStatus === 'NONE';
+            && handlerInput.requestEnvelope.request.intent.slots.busStop.value
+            && handlerInput.requestEnvelope.request.intent.slots.busStop.confirmationStatus === 'NONE';
     },
     handle(handlerInput) {
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
