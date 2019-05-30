@@ -17,7 +17,7 @@ const LaunchRequestHandler = {
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         let speechText;
         if (s3Attributes.hasOwnProperty('faveStop')) {
-            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving Charlys Gare". Or, to check buses from your saved favourite stop, simply "when is the next bus". What would you like to do?';
+            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving Charlys Gare". Or, to check buses from your saved favourite stop, just say "when is the next bus". What would you like to do?';
         } else {
             speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving Charlys Gare". Alternatively, you can say "save my stop" to set a favourite bus stop. What would you like to do?';
         }        
@@ -87,6 +87,20 @@ const NextBusIntentHandler = {
           console.error(error);
         }
     },
+};
+
+const SaveStopInProgressHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'SaveStopIntent'
+            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
+    },
+    handle(handlerInput) {
+    const currentIntent = handlerInput.requestEnvelope.request.intent;
+    return handlerInput.responseBuilder
+        .addDelegateDirective(currentIntent)
+        .getResponse();
+    }
 };
 
 const SaveStopCompleteHandler = {
@@ -238,6 +252,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         NextBusIntentHandler,
         SaveStopCompleteHandler,
+        SaveStopInProgressHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
