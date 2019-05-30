@@ -89,6 +89,39 @@ const NextBusIntentHandler = {
     },
 };
 
+/*
+const DeleteStopInProgressHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'DeleteStopIntent'
+            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
+    },
+    handle(handlerInput) {
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+        return handlerInput.responseBuilder
+            .addDelegateDirective(currentIntent)
+            .getResponse();
+    }
+};
+*/
+
+const DeleteStopCompletedHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'DeleteStopIntent'
+            && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
+    },
+    async handle(handlerInput) {
+        const attributesManager = handlerInput.attributesManager;
+        await attributesManager.deletePersistentAttributes();
+        const speechText = 'Ok, I deleted your saved stop'
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+
 const SaveStopInProgressHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -116,11 +149,10 @@ const SaveStopSlotConfirmationHandler = {
         const slotValues = getSlotValues(filledSlots);
         const busStop = slotValues.busStop;        
         const speechText = `I found ${busStop.resolved}. Is that right?`;
-        const currentIntent = handlerInput.requestEnvelope.request.intent;
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
-            .addConfirmSlotDirective("busStop", currentIntent)
+            .addConfirmSlotDirective("busStop")
             .getResponse();
     }
 };
@@ -132,9 +164,9 @@ const SaveStopCompleteHandler = {
             && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
     },
     async handle(handlerInput) {
-        const attributesManager = handlerInput.attributesManager;
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
+        const attributesManager = handlerInput.attributesManager;
         let s3Attributes = {"faveStop":slotValues.busStop.resolved};
         attributesManager.setPersistentAttributes(s3Attributes);
         await attributesManager.savePersistentAttributes();
@@ -276,6 +308,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
+        DeleteStopCompletedHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
