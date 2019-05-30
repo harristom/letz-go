@@ -11,8 +11,7 @@ const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
-    async handle(handlerInput) {
-        
+    async handle(handlerInput) {        
         const attributesManager = handlerInput.attributesManager;
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         let speechText;
@@ -89,6 +88,9 @@ const NextBusIntentHandler = {
     },
 };
 
+/*
+DISABLED AS IT DOESN'T SEEM TO WORK (S3 PERMISSIONS ISSUE)
+
 const DeleteStopHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -104,6 +106,7 @@ const DeleteStopHandler = {
             .getResponse();
     }
 };
+*/
 
 const SaveStopInProgressHandler = {
     canHandle(handlerInput) {
@@ -290,7 +293,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
-        DeleteStopHandler,
+        //DeleteStopHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
