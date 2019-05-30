@@ -154,7 +154,7 @@ const SaveStopCompleteHandler = {
         attributesManager.setPersistentAttributes(s3Attributes);
         await attributesManager.savePersistentAttributes();
 
-    let speechText = `Thanks, I'll remember that. Next time you ask "when is the next bus" I'll assume you're asking about buses from this stop. You can still ask about buses from other stops by saying something like "when is the next bus from Charlys Gare". You can change your saved stop by saying "change my stop".`;
+    let speechText = `Thanks, I'll remember that. Next time you ask "when is the next bus" I'll assume you're asking about buses from this stop. You can still ask about buses from other stops by saying something like "when is the next bus from Charlys Gare".`;
 
         return handlerInput.responseBuilder
             .speak(speechText)
