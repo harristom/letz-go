@@ -117,8 +117,8 @@ const SaveStopSlotConfirmationHandler = {
         const busStop = slotValues.busStop;        
         const speechText = `I found ${busStop.resolved}. Is that right?`;
         return handlerInput.responseBuilder
-            .speak(speechText)
-            .reprompt(speechText)
+            //.speak(speechText)
+            //.reprompt(speechText)
             .addConfirmSlotDirective("busStop")
             .getResponse();
     }
