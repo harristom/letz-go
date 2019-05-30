@@ -48,7 +48,7 @@ const getBus = async (busStop) => {
 const NextBusIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-        && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
+            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
     },
     async handle(handlerInput) {
         let busStop;
@@ -89,27 +89,10 @@ const NextBusIntentHandler = {
     },
 };
 
-/*
-const DeleteStopInProgressHandler = {
+const DeleteStopHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'DeleteStopIntent'
-            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
-    },
-    handle(handlerInput) {
-        const currentIntent = handlerInput.requestEnvelope.request.intent;
-        return handlerInput.responseBuilder
-            .addDelegateDirective(currentIntent)
-            .getResponse();
-    }
-};
-*/
-
-const DeleteStopCompletedHandler = {
-    canHandle(handlerInput) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'DeleteStopIntent'
-            && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
+            && handlerInput.requestEnvelope.request.intent.name === 'DeleteStopIntent';
     },
     async handle(handlerInput) {
         const attributesManager = handlerInput.attributesManager;
@@ -308,7 +291,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
-        DeleteStopCompletedHandler,
+        DeleteStopHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
