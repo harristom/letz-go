@@ -66,7 +66,7 @@ const NextBusIntentHandler = {
         if (slotValues.busNumber.isValidated) busNumber = busNumber.resolved;
         try {
             const buses = await getBus(fromStop, toStop, busNumber);
-            var speechText;
+            let speechText = '';
             if (!buses.hasOwnProperty('Departure')) {
                 speechText = `Sorry, I couldn't find any `;
                 if (busNumber) speechText+= `number ${busNumber} `;
