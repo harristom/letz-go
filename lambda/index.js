@@ -67,6 +67,7 @@ const NextBusIntentHandler = {
         if (slotValues.busNumber.value) busNumber = slotValues.busNumber.value;
         try {
             const buses = await getBus(fromStop, toStop);
+            console.log('busNumber :' + busNumber);)
             if (busNumber && buses.hasOwnProperty('Departure')) {
                 buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
             }
