@@ -68,7 +68,7 @@ const NextBusIntentHandler = {
         try {
             const buses = await getBus(fromStop, toStop);
             if (busNumber && buses.hasOwnProperty('Departure')) {
-                buses.Departure = buses.Departure.filter(d => d.Product.line = busNumber);
+                buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
             }
             let speechText = '';
             if (!buses.hasOwnProperty('Departure')) {
