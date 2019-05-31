@@ -35,7 +35,9 @@ const getBus = async (fromStop, toStop, busNumber) => {
                 filterEquiv: 0,
                 id: fromStop,
                 direction: toStop,
-                line: busNumber
+                line: busNumber,
+                duration: 1439,
+                maxJourneys: 1
             }
         });
         return data;
