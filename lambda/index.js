@@ -75,6 +75,7 @@ const NextBusIntentHandler = {
                 speechText += `from ${fromStop}`;
             } else {
                 const bus = buses.Departure[0];
+                const busName = bus.name.trim().replace('Bus','bus');
                 var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
                 busDue = moment.tz(busDue, 'Europe/Luxembourg');
                 var timeRemaining;
@@ -86,7 +87,7 @@ const NextBusIntentHandler = {
                 if (slotValues.toStop.value && !slotValues.toStop.isValidated) {
                     speechText = 'Sorry, I couldn\'t recognise your destination. ';
                 }
-                speechText += `The bus ${bus.line} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
+                speechText += `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
             }            
             return handlerInput.responseBuilder
                 .speak(speechText)
