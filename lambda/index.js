@@ -24,7 +24,7 @@ const LaunchRequestHandler = {
     }
 };
 
-const getBus = async (fromStop, toStop, busNumber) => {
+const getBus = async (fromStop, toStop) => {
     if (fromStop) fromStop = 'A=1@O=' + fromStop;
     if(toStop) toStop = 'A=1@O=' + toStop;
     try {
@@ -35,7 +35,6 @@ const getBus = async (fromStop, toStop, busNumber) => {
                 filterEquiv: 0,
                 id: fromStop,
                 direction: toStop,
-                line: busNumber,
                 duration: 1439,
                 maxJourneys: 1
             }
@@ -67,7 +66,10 @@ const NextBusIntentHandler = {
         if (slotValues.toStop.isValidated) toStop = slotValues.toStop.resolved;
         if (slotValues.busNumber.value) busNumber = slotValues.busNumber.value;
         try {
-            const buses = await getBus(fromStop, toStop, busNumber);
+            const buses = await getBus(fromStop, toStop);
+            if (busNumber && buses.hasOwnProperty('Departure')) {
+                buses.Departure = buses.Departure.filter(d => d.Product.line = busNumber);
+            }
             let speechText = '';
             if (!buses.hasOwnProperty('Departure')) {
                 speechText = `Sorry, I couldn't find any `;
