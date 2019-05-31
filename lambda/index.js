@@ -62,7 +62,9 @@ const NextBusIntentHandler = {
         }
         let toStop;
         let busNumber;
+        console.log('Getting to stop');
         if (slotValues.toStop.isValidated) toStop = toStop.resolved;
+        console.log('Getting number');
         if (slotValues.busNumber.isValidated) busNumber = busNumber.resolved;
         try {
             const buses = await getBus(fromStop, toStop, busNumber);
