@@ -1,11 +1,7 @@
-// This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
-// Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
-// session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
 const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
 const axios = require('axios');
 const moment = require('moment-timezone');
-
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -28,14 +24,18 @@ const LaunchRequestHandler = {
     }
 };
 
-const getBus = async (busStop) => {
+const getBus = async (fromStop, toStop, busNumber) => {
+    if (fromStop) fromStop = 'A=1@O=' + fromStop;
+    if(toStop) toStop = 'A=1@O=' + toStop;
     try {
         const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
             params: {
                 accessId: 'cdt',
                 format: 'json',
                 filterEquiv: 0,
-                id: 'A=1@O=' + busStop
+                id: fromStop,
+                direction: toStop,
+                line: busNumber
             }
         });
         return data;
@@ -50,34 +50,44 @@ const NextBusIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
     },
     async handle(handlerInput) {
-        let busStop;
+        let fromStop;
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
-        if (slotValues.busStop.isValidated) {
-            busStop = slotValues.busStop.resolved;
+        if (slotValues.fromStop.isValidated) {
+            fromStop = slotValues.fromStop.resolved;
         } else {
             const attributesManager = handlerInput.attributesManager;
             const s3Attributes = await attributesManager.getPersistentAttributes() || {};
-            busStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'Luxembourg, Gare Centrale' ;
+            fromStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'Luxembourg, Gare Centrale' ;
         }
-          
-        try {            
-            const buses = await getBus(busStop);
+        let toStop;
+        let busNumber;
+        if (slotValues.toStop.isValidated) toStop = toStop.resolved;
+        if (slotValues.busNumber.isValidated) busNumber = busNumber.resolved;
+        try {
+            const buses = await getBus(fromStop, toStop, busNumber);
             var speechText;
             if (!buses.hasOwnProperty('Departure')) {
-                speechText = `Sorry, I couldn't find any buses for ${busStop}`;
-            } else {   
+                speechText = `Sorry, I couldn't find any `;
+                if (busNumber) speechText+= `number ${busNumber} `;
+                speechText += 'buses ';
+                if (toStop) speechText += `to ${toStop} `;
+                speechText += `from ${fromStop}`;
+            } else {
                 const bus = buses.Departure[0];
                 const busName = bus.name.trim().replace('Bus','bus');
                 var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
                 busDue = moment.tz(busDue, 'Europe/Luxembourg');
                 var timeRemaining;
                 if (busDue.diff(moment(), 'seconds') < 1) {
-                    timeRemaining = 'now'
+                    timeRemaining = 'now';
                 } else {
                     timeRemaining = busDue.fromNow();
                 }
-                speechText = `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
+                if (slotValues.toStop.value && !slotValues.toStop.isValidated) {
+                    speechText = 'Sorry, I couldn\'t recognise your destination. ';
+                }
+                speechText += `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
             }            
             return handlerInput.responseBuilder
                 .speak(speechText)
@@ -88,9 +98,6 @@ const NextBusIntentHandler = {
     },
 };
 
-/*
-DISABLED AS IT DOESN'T SEEM TO WORK (S3 PERMISSIONS ISSUE)
-*/
 const DeleteStopHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
