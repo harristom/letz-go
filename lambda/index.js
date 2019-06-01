@@ -46,22 +46,54 @@ const getBus = async (fromStop, toStop, busNumber) => {
     }
 };
 
+const NextBusIntentStartedHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
+            && handlerInput.requestEnvelope.request.dialogState === 'STARTED';
+    },
+    async handle(handlerInput) {
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+        const filledSlots = currentIntent.slots;
+        const slotValues = getSlotValues(filledSlots);
+        if (!slotValues.fromStop.isValidated) {
+             const attributesManager = handlerInput.attributesManager;
+             const s3Attributes = await attributesManager.getPersistentAttributes() || {};
+             if (s3Attributes.hasOwnProperty('faveStop')) {
+                 currentIntent.slots.fromCity.value = s3Attributes.faveStop;
+             }
+        }
+        return handlerInput.responseBuilder
+            .addDelegateDirective(currentIntent)
+            .getResponse();
+    }
+};
+
+
+const NextBusInProgressHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
+            && handlerInput.requestEnvelope.request.dialogState === 'IN_PROGRESS';
+    },
+    handle(handlerInput) {
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+        return handlerInput.responseBuilder
+            .addDelegateDirective(currentIntent)
+            .getResponse();
+    },
+};
+
 const NextBusIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
+            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
+            && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
     },
     async handle(handlerInput) {
-        let fromStop;
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
-        if (slotValues.fromStop.isValidated) {
-            fromStop = slotValues.fromStop.resolved;
-        } else {
-            const attributesManager = handlerInput.attributesManager;
-            const s3Attributes = await attributesManager.getPersistentAttributes() || {};
-            fromStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'Luxembourg, Gare Centrale' ;
-        }
+        const fromStop = slotValues.fromStop.resolved;
         let toStop;
         let busNumber;
         if (slotValues.toStop.isValidated) toStop = slotValues.toStop.resolved;
@@ -101,7 +133,7 @@ const NextBusIntentHandler = {
         return handlerInput.responseBuilder
             .speak(speechText)
             .getResponse();
-    },
+    }
 };
 
 const DeleteStopHandler = {
@@ -184,7 +216,7 @@ const HelpIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speechText = 'You can ask for the next bus by saying "when is the next bus". Give it a try.';
+        const speechText = 'You can ask for the next bus from a particular stop by saying "when is the next bus from Charlys Gare". You can also say "save my stop" to save a stop as your favourite so you can ask for the next bus without specifying where you\'re leaving from. What would you like to do?';
 
         return handlerInput.responseBuilder
             .speak(speechText)
