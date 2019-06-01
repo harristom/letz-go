@@ -46,11 +46,11 @@ const getBus = async (fromStop, toStop, busNumber) => {
     }
 };
 
-const NextBusIntentInProgressHandler = {
+const NextBusIntentStartedHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
-            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
+            && handlerInput.requestEnvelope.request.dialogState === 'STARTED';
     },
     async handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
@@ -63,6 +63,20 @@ const NextBusIntentInProgressHandler = {
                  currentIntent.slots.fromStop.value = s3Attributes.faveStop;
              }
         }
+        return handlerInput.responseBuilder
+            .addDelegateDirective(currentIntent)
+            .getResponse();
+    }
+};
+
+const NextBusIntentInProgressHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
+            && handlerInput.requestEnvelope.request.dialogState === 'IN_PROGRESS';
+    },
+    async handle(handlerInput) {
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
         return handlerInput.responseBuilder
             .addDelegateDirective(currentIntent)
             .getResponse();
