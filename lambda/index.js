@@ -66,45 +66,41 @@ const NextBusIntentHandler = {
         let busNumber;
         if (slotValues.toStop.isValidated) toStop = slotValues.toStop.resolved;
         if (filledSlots.busNumber.value) busNumber = filledSlots.busNumber.value;
-        try {
-            const buses = await getBus(fromStop, toStop, busNumber);
-            console.log('Buses before filter: ', buses);
-            if (busNumber && buses.hasOwnProperty('Departure')) {
-                buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
-            }
-            console.log('Buses after filter: ', buses);
-            let speechText = '';
-            if (buses.hasOwnProperty('Departure') && buses.Departure.length > 0) {
-                console.log('Found departures');
-                const bus = buses.Departure[0];
-                const busName = bus.name.trim().replace('Bus','bus');
-                var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
-                busDue = moment.tz(busDue, 'Europe/Luxembourg');
-                var timeRemaining;
-                if (busDue.diff(moment(), 'seconds') < 1) {
-                    timeRemaining = 'now';
-                } else {
-                    timeRemaining = busDue.fromNow();
-                }
-                if (slotValues.toStop.value && !slotValues.toStop.isValidated) {
-                    speechText = 'Sorry, I couldn\'t recognise your destination. ';
-                }
-                speechText += `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
-            } else {
-                console.log('No departures');
-                speechText = `Sorry, I couldn't find any `;
-                if (busNumber) speechText+= `number ${busNumber} `;
-                speechText += 'buses ';
-                if (toStop) speechText += `to ${toStop} `;
-                speechText += `from ${fromStop} `;
-                speechText += 'in the next hour';
-            }            
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .getResponse();
-        } catch (error) {
-          console.error(error);
+        const buses = await getBus(fromStop, toStop, busNumber);
+        console.log('Buses before filter: ', buses);
+        if (busNumber && buses.hasOwnProperty('Departure')) {
+            buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
         }
+        console.log('Buses after filter: ', buses);
+        let speechText = '';
+        if (buses.hasOwnProperty('Departure') && buses.Departure.length > 0) {
+            console.log('Found departures');
+            const bus = buses.Departure[0];
+            const busName = bus.name.trim().replace('Bus','bus');
+            var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
+            busDue = moment.tz(busDue, 'Europe/Luxembourg');
+            var timeRemaining;
+            if (busDue.diff(moment(), 'seconds') < 1) {
+                timeRemaining = 'now';
+            } else {
+                timeRemaining = busDue.fromNow();
+            }
+            if (slotValues.toStop.value && !slotValues.toStop.isValidated) {
+                speechText = 'Sorry, I couldn\'t recognise your destination. ';
+            }
+            speechText += `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
+        } else {
+            console.log('No departures');
+            speechText = `Sorry, I couldn't find any `;
+            if (busNumber) speechText+= `number ${busNumber} `;
+            speechText += 'buses ';
+            if (toStop) speechText += `to ${toStop} `;
+            speechText += `from ${fromStop} `;
+            speechText += 'in the next hour';
+        }            
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .getResponse();
     },
 };
 
