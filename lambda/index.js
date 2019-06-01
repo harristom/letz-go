@@ -46,11 +46,11 @@ const getBus = async (fromStop, toStop, busNumber) => {
     }
 };
 
-const NextBusIntentStartedHandler = {
+const NextBusIntentInProgressandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
-            && handlerInput.requestEnvelope.request.dialogState === 'STARTED';
+            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
     },
     async handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
@@ -67,21 +67,6 @@ const NextBusIntentStartedHandler = {
             .addDelegateDirective(currentIntent)
             .getResponse();
     }
-};
-
-
-const NextBusInProgressHandler = {
-    canHandle(handlerInput) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
-            && handlerInput.requestEnvelope.request.dialogState === 'IN_PROGRESS';
-    },
-    handle(handlerInput) {
-        const currentIntent = handlerInput.requestEnvelope.request.intent;
-        return handlerInput.responseBuilder
-            .addDelegateDirective(currentIntent)
-            .getResponse();
-    },
 };
 
 const NextBusIntentHandler = {
@@ -336,7 +321,6 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         NextBusIntentHandler,
         NextBusInProgressHandler,
-        NextBusIntentStartedHandler,
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
