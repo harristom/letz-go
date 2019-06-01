@@ -334,6 +334,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         NextBusIntentHandler,
         NextBusIntentInProgressHandler,
+        NextBusIntentStartedHandler,
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
