@@ -64,7 +64,7 @@ const NextBusIntentStartedHandler = {
              }
         }
         return handlerInput.responseBuilder
-            .addDelegateDirective(currentIntent)
+            .addDelegateDirective()
             .getResponse();
     }
 };
@@ -77,9 +77,19 @@ const NextBusIntentInProgressHandler = {
     },
     async handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
-        return handlerInput.responseBuilder
-            .addDelegateDirective(currentIntent)
-            .getResponse();
+        const fromStop = getSlotValues(currentIntent.slots).fromStop;
+        if (fromStop.value && !fromStop.isValidated) {
+            const speechText = 'I don\'t know that stop. Which stop do you want to check departures from?';
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .reprompt(speechText)
+                .addElicitSlotDirective('fromStop')
+                .getResponse();
+        } else {
+            return handlerInput.responseBuilder
+                .addDelegateDirective()
+                .getResponse();
+        }
     }
 };
 
@@ -160,7 +170,7 @@ const SaveStopInProgressHandler = {
     handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         return handlerInput.responseBuilder
-            .addDelegateDirective(currentIntent)
+            .addDelegateDirective()
             .getResponse();
     }
 };
