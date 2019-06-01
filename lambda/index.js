@@ -100,6 +100,7 @@ const NextBusIntentHandler = {
         }            
         return handlerInput.responseBuilder
             .speak(speechText)
+            .withShouldEndSession (true)
             .getResponse();
     },
 };
@@ -115,7 +116,7 @@ const DeleteStopHandler = {
         const speechText = 'Ok, I deleted your saved stop'
         return handlerInput.responseBuilder
             .speak(speechText)
-            .reprompt(speechText)
+            .withShouldEndSession (true)
             .getResponse();
     }
 };
@@ -174,6 +175,7 @@ const SaveStopCompleteHandler = {
 
         return handlerInput.responseBuilder
             .speak(speechText)
+            .withShouldEndSession (true)
             .getResponse();
     }
 };
