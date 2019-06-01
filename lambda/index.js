@@ -46,22 +46,39 @@ const getBus = async (fromStop, toStop, busNumber) => {
     }
 };
 
+const NextBusIntentInProgressHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
+            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
+    },
+    async handle(handlerInput) {
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+        const filledSlots = currentIntent.slots;
+        const slotValues = getSlotValues(filledSlots);
+        if (!slotValues.fromStop.isValidated) {
+             const attributesManager = handlerInput.attributesManager;
+             const s3Attributes = await attributesManager.getPersistentAttributes() || {};
+             if (s3Attributes.hasOwnProperty('faveStop')) {
+                 currentIntent.slots.fromCity.value = s3Attributes.faveStop;
+             }
+        }
+        return handlerInput.responseBuilder
+            .addDelegateDirective(currentIntent)
+            .getResponse();
+    }
+};
+
 const NextBusIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent';
+            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
+            && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
     },
     async handle(handlerInput) {
-        let fromStop;
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
-        if (slotValues.fromStop.isValidated) {
-            fromStop = slotValues.fromStop.resolved;
-        } else {
-            const attributesManager = handlerInput.attributesManager;
-            const s3Attributes = await attributesManager.getPersistentAttributes() || {};
-            fromStop = s3Attributes.hasOwnProperty('faveStop')? s3Attributes.faveStop : 'Luxembourg, Gare Centrale' ;
-        }
+        const fromStop = slotValues.fromStop.resolved;
         let toStop;
         let busNumber;
         if (slotValues.toStop.isValidated) toStop = slotValues.toStop.resolved;
@@ -100,9 +117,8 @@ const NextBusIntentHandler = {
         }            
         return handlerInput.responseBuilder
             .speak(speechText)
-            .withShouldEndSession (true)
             .getResponse();
-    },
+    }
 };
 
 const DeleteStopHandler = {
@@ -116,7 +132,6 @@ const DeleteStopHandler = {
         const speechText = 'Ok, I deleted your saved stop'
         return handlerInput.responseBuilder
             .speak(speechText)
-            .withShouldEndSession (true)
             .getResponse();
     }
 };
@@ -175,7 +190,6 @@ const SaveStopCompleteHandler = {
 
         return handlerInput.responseBuilder
             .speak(speechText)
-            .withShouldEndSession (true)
             .getResponse();
     }
 };
@@ -305,6 +319,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         NextBusIntentHandler,
+        NextBusIntentInProgressHandler,
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
