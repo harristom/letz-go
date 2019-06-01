@@ -65,7 +65,7 @@ const NextBusIntentHandler = {
         let toStop;
         let busNumber;
         if (slotValues.toStop.isValidated) toStop = slotValues.toStop.resolved;
-        if (filledSlots.busNumber.value) busNumber = filledSlots.busNumber.value;
+        if (slotValues.busNumber.resolved) busNumber = filledSlots.busNumber.resolved;
         const buses = await getBus(fromStop, toStop, busNumber);
         console.log('Buses before filter: ', buses);
         if (busNumber && buses.hasOwnProperty('Departure')) {
@@ -85,7 +85,7 @@ const NextBusIntentHandler = {
             } else {
                 timeRemaining = busDue.fromNow();
             }
-            if (slotValues.toStop.value && !slotValues.toStop.isValidated) {
+            if (slotValues.toStop.resolved && !slotValues.toStop.isValidated) {
                 speechText = 'Sorry, I couldn\'t recognise your destination. ';
             }
             speechText += `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
