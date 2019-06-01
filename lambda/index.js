@@ -24,9 +24,11 @@ const LaunchRequestHandler = {
     }
 };
 
-const getBus = async (fromStop, toStop) => {
+const getBus = async (fromStop, toStop, busNumber) => {
     if (fromStop) fromStop = 'A=1@O=' + fromStop;
     if(toStop) toStop = 'A=1@O=' + toStop;
+    let maxJourneys;
+    if(!busNumber) maxJourneys = 1;
     try {
         const { data } = await axios.get('https://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
             params: {
@@ -35,8 +37,7 @@ const getBus = async (fromStop, toStop) => {
                 filterEquiv: 0,
                 id: fromStop,
                 direction: toStop,
-                duration: 1439,
-                maxJourneys: 1
+                maxJourneys: maxJourneys
             }
         });
         return data;
@@ -66,7 +67,7 @@ const NextBusIntentHandler = {
         if (slotValues.toStop.isValidated) toStop = slotValues.toStop.resolved;
         if (filledSlots.busNumber.value) busNumber = filledSlots.busNumber.value;
         try {
-            const buses = await getBus(fromStop, toStop);
+            const buses = await getBus(fromStop, toStop, busNumber);
             console.log('Buses before filter: ', buses);
             if (busNumber && buses.hasOwnProperty('Departure')) {
                 buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
@@ -95,7 +96,8 @@ const NextBusIntentHandler = {
                 if (busNumber) speechText+= `number ${busNumber} `;
                 speechText += 'buses ';
                 if (toStop) speechText += `to ${toStop} `;
-                speechText += `from ${fromStop}`;
+                speechText += `from ${fromStop} `;
+                speechText += 'in the next hour';
             }            
             return handlerInput.responseBuilder
                 .speak(speechText)
