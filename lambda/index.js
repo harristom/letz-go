@@ -73,14 +73,8 @@ const NextBusIntentHandler = {
             }
             console.log('Buses after filter: ', buses);
             let speechText = '';
-            if (!buses.hasOwnProperty('Departure')) {
-                console.log('No departures')
-                speechText = `Sorry, I couldn't find any `;
-                if (busNumber) speechText+= `number ${busNumber} `;
-                speechText += 'buses ';
-                if (toStop) speechText += `to ${toStop} `;
-                speechText += `from ${fromStop}`;
-            } else {
+            if (buses.hasOwnProperty('Departure') && buses.Departure.length > 0) {
+                console.log('Found departures');
                 const bus = buses.Departure[0];
                 const busName = bus.name.trim().replace('Bus','bus');
                 var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
@@ -95,6 +89,13 @@ const NextBusIntentHandler = {
                     speechText = 'Sorry, I couldn\'t recognise your destination. ';
                 }
                 speechText += `The ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
+            } else {
+                console.log('No departures');
+                speechText = `Sorry, I couldn't find any `;
+                if (busNumber) speechText+= `number ${busNumber} `;
+                speechText += 'buses ';
+                if (toStop) speechText += `to ${toStop} `;
+                speechText += `from ${fromStop}`;
             }            
             return handlerInput.responseBuilder
                 .speak(speechText)
