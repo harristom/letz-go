@@ -39,6 +39,8 @@ const getBus = async (fromStop, toStop) => {
                 maxJourneys: 1
             }
         });
+        console.log("Request: ", axios.request);
+        console.log("Response: ", axios.response);
         return data;
     } catch (error) {
         console.error('cannot fetch departure board', error);
@@ -67,7 +69,6 @@ const NextBusIntentHandler = {
         if (filledSlots.busNumber.value) busNumber = filledSlots.busNumber.value;
         try {
             const buses = await getBus(fromStop, toStop);
-            console.log('busNumber :' + busNumber);
             if (busNumber && buses.hasOwnProperty('Departure')) {
                 buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
             }
