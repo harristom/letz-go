@@ -56,7 +56,7 @@ const NextBusIntentStartedHandler = {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         const filledSlots = currentIntent.slots;
         const slotValues = getSlotValues(filledSlots);
-        if (!slotValues.fromStop.isValidated) {
+        if (!currentIntent.slots.fromStop.value) {
              const attributesManager = handlerInput.attributesManager;
              const s3Attributes = await attributesManager.getPersistentAttributes() || {};
              if (s3Attributes.hasOwnProperty('faveStop')) {
