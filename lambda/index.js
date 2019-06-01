@@ -46,7 +46,7 @@ const getBus = async (fromStop, toStop, busNumber) => {
     }
 };
 
-const NextBusIntentInProgressandler = {
+const NextBusIntentInProgressHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
@@ -320,7 +320,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         NextBusIntentHandler,
-        NextBusInProgressHandler,
+        NextBusIntentInProgressHandler,
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
