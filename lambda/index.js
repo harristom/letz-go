@@ -106,7 +106,7 @@ const NextBusIntentHandler = {
         let toStop;
         let busNumber;
         if (slotValues.toStop.isValidated) toStop = slotValues.toStop.resolved;
-        if (slotValues.busNumber.resolved) busNumber = filledSlots.busNumber.resolved;
+        if (slotValues.busNumber.resolved) busNumber = slotValues.busNumber.resolved;
         const buses = await getBus(fromStop, toStop, busNumber);
         console.log('Buses before filter: ', buses);
         if (busNumber && buses.hasOwnProperty('Departure')) {
