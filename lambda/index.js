@@ -60,12 +60,7 @@ const NextBusIntentInProgressHandler = {
              const attributesManager = handlerInput.attributesManager;
              const s3Attributes = await attributesManager.getPersistentAttributes() || {};             
              if (s3Attributes.hasOwnProperty('faveStop')) {
-                 const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-                 console.log('Got session attributes');
-                 sessionAttributes.defaultStop = 'test';
-                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-                 console.log('Set session attributes');
-                 currentIntent.slots.fromStop.value = s3Attributes.faveStop;
+                currentIntent.slots.fromStop.value = s3Attributes.faveStop;
              }
         }
         return handlerInput.responseBuilder
@@ -82,12 +77,11 @@ const NextBusIntentHandler = {
     },
     async handle(handlerInput) {
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const slotValues = getSlotValues(filledSlots);
+        const attributesManager = handlerInput.attributesManager;
+        const s3Attributes = await attributesManager.getPersistentAttributes() || {}; 
         let speechText;
-        console.log('slotValues.fromStop.isValidated: ', slotValues.fromStop.isValidated);
-        console.log('sessionAttributes.defaultStop: ', sessionAttributes.defaultStop);
-        if (!slotValues.fromStop.isValidated && !sessionAttributes.defaultStop) {
+        if (!slotValues.fromStop.isValidated && slotValues.fromStop.resolved != s3Attributes.faveStop) {
             speechText = 'Sorry, I don\'t know that stop. Which stop do you want to check departures for?';
             return handlerInput.responseBuilder
                 .speak(speechText)
