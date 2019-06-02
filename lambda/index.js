@@ -83,6 +83,8 @@ const NextBusIntentHandler = {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const slotValues = getSlotValues(filledSlots);
         let speechText;
+        console.log('slotValues.isValidated: ', slotValues.isValidated)
+        console.log('sessionAttributes.defaultStop: ', sessionAttributes.defaultStop)
         if (!slotValues.isValidated && !sessionAttributes.defaultStop) {
             speechText = 'Sorry, I don\'t know that stop. Which stop do you want to check departures for?';
             return handlerInput.responseBuilder
