@@ -129,7 +129,7 @@ const NextBusIntentHandler = {
             if (slotValues.toStop.resolved && !slotValues.toStop.isValidated) {
                 speechText = 'Sorry, I couldn\'t recognise your destination. ';
             }
-            speechText += `The bus ${bus.Product.line} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
+            speechText += `The bus number ${bus.Product.line} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
         } else {
             console.log('No departures');
             speechText = `Sorry, I couldn't find any `;
