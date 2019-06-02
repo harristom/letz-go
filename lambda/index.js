@@ -80,7 +80,7 @@ const NextBusIntentHandler = {
         const slotValues = getSlotValues(filledSlots);
         const attributesManager = handlerInput.attributesManager;
         const s3Attributes = await attributesManager.getPersistentAttributes() || {}; 
-        let speechText;
+        let speechText = '';
         if (!slotValues.fromStop.isValidated && slotValues.fromStop.resolved != s3Attributes.faveStop) {
             speechText = 'Sorry, I don\'t know that stop. Which stop do you want to check departures for?';
             return handlerInput.responseBuilder
