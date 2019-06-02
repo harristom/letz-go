@@ -60,6 +60,7 @@ const NextBusIntentInProgressHandler = {
              const s3Attributes = await attributesManager.getPersistentAttributes() || {};
              if (s3Attributes.hasOwnProperty('faveStop')) {
                  currentIntent.slots.fromStop.value = s3Attributes.faveStop;
+                 current.Intent.dialogState = 'COMPLETED';
              }
             return handlerInput.responseBuilder
                 .addDelegateDirective(currentIntent)
