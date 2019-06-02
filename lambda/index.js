@@ -64,13 +64,6 @@ const NextBusIntentInProgressHandler = {
             return handlerInput.responseBuilder
                 .addDelegateDirective(currentIntent)
                 .getResponse();
-        } else if (filledSlots.fromStop.synonym && !filledSlots.fromStop.isValidated) {
-            const speechText = 'I don\'t know that stop. Which stop do you want to check departures from?';
-            return handlerInput.responseBuilder
-                .speak(speechText)
-                .reprompt(speechText)
-                .addElicitSlotDirective('fromStop')
-                .getResponse();
         } else {
             return handlerInput.responseBuilder
                 .addDelegateDirective(currentIntent)
