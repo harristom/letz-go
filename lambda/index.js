@@ -103,7 +103,7 @@ const NextBusIntentHandler = {
         if (buses.hasOwnProperty('Departure') && buses.Departure.length > 0) {
             console.log('Found departures');
             const bus = buses.Departure[0];
-            const busName = bus.name.trim().replace('Bus','bus');
+            const busName = bus.Product.line ? bus.Product.line : bus.name.trim().replace('Bus','bus');
             var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
             busDue = moment.tz(busDue, 'Europe/Luxembourg');
             var timeRemaining;
@@ -115,7 +115,7 @@ const NextBusIntentHandler = {
             if (slotValues.toStop.resolved && !slotValues.toStop.isValidated) {
                 speechText = 'Sorry, I couldn\'t recognise your destination. ';
             }
-            speechText += `The bus number ${bus.Product.line} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}`;
+            speechText += `The bus number ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}.`;
         } else {
             console.log('No departures');
             speechText = `Sorry, I couldn't find any `;
@@ -123,8 +123,8 @@ const NextBusIntentHandler = {
             speechText += 'buses ';
             if (toStop) speechText += `to ${toStop} `;
             speechText += `from ${fromStop} `;
-            speechText += 'in the next hour';
-        }            
+            speechText += 'in the next hour.';
+        }
         return handlerInput.responseBuilder
             .speak(speechText)
             .withShouldEndSession(true)
