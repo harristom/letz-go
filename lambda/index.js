@@ -60,16 +60,11 @@ const NextBusIntentInProgressHandler = {
              const s3Attributes = await attributesManager.getPersistentAttributes() || {};
              if (s3Attributes.hasOwnProperty('faveStop')) {
                  currentIntent.slots.fromStop.value = s3Attributes.faveStop;
-                 currentIntent.dialogState = 'COMPLETED';
              }
-            return handlerInput.responseBuilder
-                .addDelegateDirective(currentIntent)
-                .getResponse();
-        } else {
-            return handlerInput.responseBuilder
-                .addDelegateDirective(currentIntent)
-                .getResponse();
-        }
+         }
+        return handlerInput.responseBuilder
+            .addDelegateDirective(currentIntent)
+            .getResponse();
     }
 };
 
