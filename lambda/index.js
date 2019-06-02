@@ -78,7 +78,7 @@ const NextBusIntentInProgressHandler = {
     async handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         const fromStop = getSlotValues(currentIntent.slots).fromStop;
-        if (fromStop.value && !fromStop.isValidated) {
+        if (fromStop.synonym && !fromStop.isValidated) {
             const speechText = 'I don\'t know that stop. Which stop do you want to check departures from?';
             return handlerInput.responseBuilder
                 .speak(speechText)
