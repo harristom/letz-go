@@ -75,8 +75,18 @@ const NextBusIntentHandler = {
             && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
     },
     async handle(handlerInput) {
-        const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
+        const currentIntent = handlerInput.requestEnvelope.request.intent;
+        const filledSlots = currentIntent.slots;
         const slotValues = getSlotValues(filledSlots);
+        let speechText = '';
+        if (!slotValues.fromStop.isValidated) {
+            speechText = 'I don\'t know that stop. Which stop would you like to check departures from?';
+            return handlerInput.responseBuilder
+              .speak(speechText)
+              .reprompt(speechText)
+              .addElicitSlotDirective('fromStop')
+              .getResponse();
+        } 
         const fromStop = slotValues.fromStop.resolved;
         let toStop;
         let busNumber;
@@ -88,7 +98,7 @@ const NextBusIntentHandler = {
             buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
         }
         console.log('Buses after filter: ', buses);
-        let speechText = '';
+
         if (buses.hasOwnProperty('Departure') && buses.Departure.length > 0) {
             console.log('Found departures');
             const bus = buses.Departure[0];
