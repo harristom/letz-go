@@ -55,13 +55,17 @@ const NextBusIntentInProgressHandler = {
     async handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         const filledSlots = currentIntent.slots;
+        const slotValues = getSlotValues(filledSlots);
         if (!currentIntent.slots.fromStop.value) {
              const attributesManager = handlerInput.attributesManager;
-             const s3Attributes = await attributesManager.getPersistentAttributes() || {};
+             const s3Attributes = await attributesManager.getPersistentAttributes() || {};             
              if (s3Attributes.hasOwnProperty('faveStop')) {
+                 const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+                 sessionAttributes.defaultStop = true;
+                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
                  currentIntent.slots.fromStop.value = s3Attributes.faveStop;
              }
-         }
+        }
         return handlerInput.responseBuilder
             .addDelegateDirective(currentIntent)
             .getResponse();
@@ -75,18 +79,18 @@ const NextBusIntentHandler = {
             && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
     },
     async handle(handlerInput) {
-        const currentIntent = handlerInput.requestEnvelope.request.intent;
-        const filledSlots = currentIntent.slots;
+        const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const slotValues = getSlotValues(filledSlots);
-        let speechText = '';
-        if (!slotValues.fromStop.isValidated) {
-            speechText = 'I don\'t know that stop. Which stop would you like to check departures from?';
+        let speechText;
+        if (!slotValues.isValidated && !sessionAttributes.defaultStop) {
+            speechText = 'Sorry, I don\'t know that stop. Which stop do you want to check departures for?';
             return handlerInput.responseBuilder
-              .speak(speechText)
-              .reprompt(speechText)
-              .addElicitSlotDirective('fromStop')
-              .getResponse();
-        } 
+                .speak(speechText)
+                .reprompt(speechText)
+                .addElicitSlotDirective('fromStop')
+                .getResponse();
+        }
         const fromStop = slotValues.fromStop.resolved;
         let toStop;
         let busNumber;
@@ -98,7 +102,6 @@ const NextBusIntentHandler = {
             buses.Departure = buses.Departure.filter(d => d.Product.line == busNumber);
         }
         console.log('Buses after filter: ', buses);
-
         if (buses.hasOwnProperty('Departure') && buses.Departure.length > 0) {
             console.log('Found departures');
             const bus = buses.Departure[0];
@@ -330,11 +333,11 @@ function getSlotValues(filledSlots) {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        NextBusIntentHandler,
         NextBusIntentInProgressHandler,
-        SaveStopCompleteHandler,
+        NextBusIntentHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
+        SaveStopCompleteHandler,
         DeleteStopHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
