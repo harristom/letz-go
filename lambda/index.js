@@ -46,39 +46,25 @@ const getBus = async (fromStop, toStop, busNumber) => {
     }
 };
 
-const NextBusIntentStartedHandler = {
+const NextBusIntentInProgressHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
-            && handlerInput.requestEnvelope.request.dialogState === 'STARTED';
+            && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
     },
     async handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         const filledSlots = currentIntent.slots;
-        const slotValues = getSlotValues(filledSlots);
         if (!currentIntent.slots.fromStop.value) {
              const attributesManager = handlerInput.attributesManager;
              const s3Attributes = await attributesManager.getPersistentAttributes() || {};
              if (s3Attributes.hasOwnProperty('faveStop')) {
                  currentIntent.slots.fromStop.value = s3Attributes.faveStop;
              }
-        }
-        return handlerInput.responseBuilder
-            .addDelegateDirective(currentIntent)
-            .getResponse();
-    }
-};
-
-const NextBusIntentInProgressHandler = {
-    canHandle(handlerInput) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'NextBusIntent'
-            && handlerInput.requestEnvelope.request.dialogState === 'IN_PROGRESS';
-    },
-    async handle(handlerInput) {
-        const currentIntent = handlerInput.requestEnvelope.request.intent;
-        const fromStop = getSlotValues(currentIntent.slots).fromStop;
-        if (fromStop.synonym && !fromStop.isValidated) {
+            return handlerInput.responseBuilder
+                .addDelegateDirective(currentIntent)
+                .getResponse();
+        } else if (filledSlots.fromStop.synonym && !filledSlots.fromStop.isValidated) {
             const speechText = 'I don\'t know that stop. Which stop do you want to check departures from?';
             return handlerInput.responseBuilder
                 .speak(speechText)
@@ -347,7 +333,6 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         NextBusIntentHandler,
         NextBusIntentInProgressHandler,
-        NextBusIntentStartedHandler,
         SaveStopCompleteHandler,
         SaveStopSlotConfirmationHandler,
         SaveStopInProgressHandler,
