@@ -64,7 +64,7 @@ const NextBusIntentStartedHandler = {
              }
         }
         return handlerInput.responseBuilder
-            .addDelegateDirective()
+            .addDelegateDirective(currentIntent)
             .getResponse();
     }
 };
@@ -87,7 +87,7 @@ const NextBusIntentInProgressHandler = {
                 .getResponse();
         } else {
             return handlerInput.responseBuilder
-                .addDelegateDirective()
+                .addDelegateDirective(currentIntent)
                 .getResponse();
         }
     }
@@ -170,7 +170,7 @@ const SaveStopInProgressHandler = {
     handle(handlerInput) {
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         return handlerInput.responseBuilder
-            .addDelegateDirective()
+            .addDelegateDirective(currentIntent)
             .getResponse();
     }
 };
