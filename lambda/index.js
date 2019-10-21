@@ -148,6 +148,19 @@ const DeleteStopHandler = {
     }
 };
 
+const FallbackHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.FallbackIntent';
+    },
+    handle(handlerInput) {
+        return handlerInput.responseBuilder
+            .speak(`The Lux Bus skill can't help you with that. You can try asking something like "when is the next bus leaving Charlys Gare". Or, to check buses from your saved favourite stop, just say "when is the next bus". What would you like to do?`)
+            .reprompt(`What would you like to do?`)
+            .getResponse();
+    },
+};
+
 
 const SaveStopInProgressHandler = {
     canHandle(handlerInput) {
