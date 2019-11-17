@@ -12,9 +12,9 @@ const LaunchRequestHandler = {
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         let speechText;
         if (s3Attributes.hasOwnProperty('faveStop')) {
-            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving Charlys Gare". Or, to check buses from your saved favourite stop, just say "when is the next bus". What would you like to do?';
+            speechText = 'Welcome to Lux Bus. What would you like to do?';
         } else {
-            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving Charlys Gare". Alternatively, you can say "save my stop" to set a favourite bus stop. What would you like to do?';
+            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving Charlys Gare". Alternatively, you can say "save my stop" to set a default departure stop. What would you like to do?';
         }        
         
         return handlerInput.responseBuilder
@@ -169,6 +169,7 @@ const SaveStopInProgressHandler = {
             && handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED';
     },
     handle(handlerInput) {
+        // If the dialog is not complete, we hand back to Alexa to elicit all necessary slots from the user
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         return handlerInput.responseBuilder
             .addDelegateDirective(currentIntent)
@@ -185,6 +186,7 @@ const SaveStopSlotConfirmationHandler = {
             && handlerInput.requestEnvelope.request.intent.slots.busStop.confirmationStatus === 'NONE';
     },
     handle(handlerInput) {
+        // Asks the user to confirm the slot resolved correctly
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
         const busStop = slotValues.busStop;        
