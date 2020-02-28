@@ -12,9 +12,9 @@ const LaunchRequestHandler = {
         const s3Attributes = await attributesManager.getPersistentAttributes() || {};
         let speechText;
         if (s3Attributes.hasOwnProperty('faveStop')) {
-            speechText = 'Welcome to Lux Bus. What would you like to do?';
+            speechText = 'Welcome to Letz Go. What would you like to do?';
         } else {
-            speechText = 'Welcome to Lux Bus. You can try asking something like "when is the next bus leaving Charlys Gare". Alternatively, you can say "save my stop" to set a default departure stop. What would you like to do?';
+            speechText = 'Welcome to Letz Go. You can try asking something like "when is the next bus leaving Charlys Gare". Alternatively, you can say "save my stop" to set a default departure stop. What would you like to do?';
         }        
         
         return handlerInput.responseBuilder
@@ -155,7 +155,7 @@ const FallbackHandler = {
     },
     handle(handlerInput) {
         return handlerInput.responseBuilder
-            .speak(`The Lux Bus skill can't help you with that. You can try asking something like "when is the next bus leaving Charlys Gare". Or, to check buses from your saved favourite stop, just say "when is the next bus". What would you like to do?`)
+            .speak(`The Letz Go skill can't help you with that. You can try asking something like "when is the next bus leaving Charlys Gare". Or, to check buses from your saved favourite stop, just say "when is the next bus". What would you like to do?`)
             .reprompt(`What would you like to do?`)
             .getResponse();
     },
