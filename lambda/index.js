@@ -124,6 +124,10 @@ const NextBusIntentHandler = {
             speechText += `from ${fromStop} `;
             speechText += 'in the next hour.';
         }
+        if (!s3Attributes.hasOwnProperty('faveStop')) {
+            saveStop(fromStop);
+            
+        }
         return handlerInput.responseBuilder
             .speak(speechText)
             .withShouldEndSession(true)
@@ -136,9 +140,9 @@ const DeleteStopHandler = {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'DeleteStopIntent';
     },
-    async handle(handlerInput) {
+    handle(handlerInput) {
         const attributesManager = handlerInput.attributesManager;
-        await attributesManager.deletePersistentAttributes();
+        attributesManager.deletePersistentAttributes();
         const speechText = 'Ok, I deleted your saved stop'
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -204,13 +208,10 @@ const SaveStopCompleteHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'SaveStopIntent'
             && handlerInput.requestEnvelope.request.dialogState === 'COMPLETED';
     },
-    async handle(handlerInput) {
+    handle(handlerInput) {
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
-        const attributesManager = handlerInput.attributesManager;
-        let s3Attributes = {"faveStop":slotValues.busStop.resolved};
-        attributesManager.setPersistentAttributes(s3Attributes);
-        await attributesManager.savePersistentAttributes();
+        saveStop(slotValues.busStop.resolved);
         let speechText = `Thanks, I'll remember that. Next time you ask "when is the next bus" I'll assume you're asking about buses from this stop. You can still ask about buses from other stops by saying something like "when is the next bus from Charlys Gare".`;
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -218,6 +219,13 @@ const SaveStopCompleteHandler = {
             .getResponse();
     }
 };
+
+const saveStop = (stop) => {
+        const attributesManager = handlerInput.attributesManager;
+        let s3Attributes = {"faveStop":stop};
+        attributesManager.setPersistentAttributes(s3Attributes);
+        attributesManager.savePersistentAttributes();
+}
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
