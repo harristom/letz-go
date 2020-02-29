@@ -125,8 +125,7 @@ const NextBusIntentHandler = {
             speechText += 'in the next hour.';
         }
         if (!s3Attributes.hasOwnProperty('faveStop')) {
-            saveStop(fromStop);
-            
+            saveStop(attributesManager, fromStop);
         }
         return handlerInput.responseBuilder
             .speak(speechText)
