@@ -126,6 +126,7 @@ const NextBusIntentHandler = {
         }
         if (!s3Attributes.hasOwnProperty('faveStop')) {
             saveStop(attributesManager, fromStop);
+            speechText += ` By the way, from now on, when you ask "when is the next bus" without specifying a departure stop, I'll assume you're asking about buses from ${fromStop}. If you'd ever like me to change your saved stop, just ask.`
         }
         return handlerInput.responseBuilder
             .speak(speechText)
