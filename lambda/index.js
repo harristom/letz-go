@@ -15,8 +15,7 @@ const LaunchRequestHandler = {
             speechText = 'Welcome to Lëtz Go. What would you like to do?';
         } else {
             speechText = 'Welcome to Lëtz Go. You can try asking something like "when is the next bus leaving Charlys Gare". Alternatively, you can say "save my stop" to set a default departure stop. What would you like to do?';
-        }        
-        
+        }
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
@@ -61,10 +60,6 @@ const NextBusIntentInProgressHandler = {
              const s3Attributes = await attributesManager.getPersistentAttributes() || {};             
              if (s3Attributes.hasOwnProperty('faveStop')) {
                 currentIntent.slots.fromStop.value = s3Attributes.faveStop;
-             } else {
-                const sessionAttributes = attributesManager.getSessionAttributes();
-                sessionAttributes.noFromStop = true;
-                attributesManager.setSessionAttributes(sessionAttributes);
              }
         }
         return handlerInput.responseBuilder
@@ -216,9 +211,7 @@ const SaveStopCompleteHandler = {
         let s3Attributes = {"faveStop":slotValues.busStop.resolved};
         attributesManager.setPersistentAttributes(s3Attributes);
         await attributesManager.savePersistentAttributes();
-
-    let speechText = `Thanks, I'll remember that. Next time you ask "when is the next bus" I'll assume you're asking about buses from this stop. You can still ask about buses from other stops by saying something like "when is the next bus from Charlys Gare".`;
-
+        let speechText = `Thanks, I'll remember that. Next time you ask "when is the next bus" I'll assume you're asking about buses from this stop. You can still ask about buses from other stops by saying something like "when is the next bus from Charlys Gare".`;
         return handlerInput.responseBuilder
             .speak(speechText)
             .withShouldEndSession(true)
