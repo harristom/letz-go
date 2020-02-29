@@ -61,6 +61,10 @@ const NextBusIntentInProgressHandler = {
              const s3Attributes = await attributesManager.getPersistentAttributes() || {};             
              if (s3Attributes.hasOwnProperty('faveStop')) {
                 currentIntent.slots.fromStop.value = s3Attributes.faveStop;
+             } else {
+                 const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+                  sessionAttributes.noFromStop = true;
+                  attributesManager.setSessionAttributes(sessionAttributes);
              }
         }
         return handlerInput.responseBuilder
