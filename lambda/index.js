@@ -211,7 +211,7 @@ const SaveStopCompleteHandler = {
     handle(handlerInput) {
         const filledSlots = handlerInput.requestEnvelope.request.intent.slots;
         const slotValues = getSlotValues(filledSlots);
-        saveStop(slotValues.busStop.resolved);
+        saveStop(handlerInput.attributesManager, slotValues.busStop.resolved);
         let speechText = `Thanks, I'll remember that. Next time you ask "when is the next bus" I'll assume you're asking about buses from this stop. You can still ask about buses from other stops by saying something like "when is the next bus from Charlys Gare".`;
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -220,11 +220,10 @@ const SaveStopCompleteHandler = {
     }
 };
 
-const saveStop = (stop) => {
-        const attributesManager = handlerInput.attributesManager;
-        let s3Attributes = {"faveStop":stop};
-        attributesManager.setPersistentAttributes(s3Attributes);
-        attributesManager.savePersistentAttributes();
+const saveStop = (attributesManager, stop) => {
+    let s3Attributes = {"faveStop":stop};
+    attributesManager.setPersistentAttributes(s3Attributes);
+    attributesManager.savePersistentAttributes();
 }
 
 const HelpIntentHandler = {
