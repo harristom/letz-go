@@ -101,8 +101,8 @@ const NextBusIntentHandler = {
         console.log('Buses after filter: ', buses);
         if (buses.hasOwnProperty('Departure') && buses.Departure.length > 0) {
             console.log('Found departures');
-            const bus = buses.Departure[0];
-            const busName = bus.Product.line ? bus.Product.line : bus.name.trim().replace('Bus','bus');
+            var bus = buses.Departure[0];
+            var busName = bus.Product.line ? bus.Product.line : bus.name.trim().replace('Bus','bus');
             var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
             busDue = moment.tz(busDue, 'Europe/Luxembourg');
             var timeRemaining;
