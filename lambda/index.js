@@ -131,6 +131,9 @@ const NextBusIntentHandler = {
         return handlerInput.responseBuilder
             .speak(speechText)
             .withShouldEndSession(true)
+            .withSimpleCard(
+                `${departureTime} 🚌 ${busName} ➡️ ${bus.direction}`,
+                `The bus number ${busName} to ${bus.direction} via ${toStop} is leaving ${timeRemaining} from ${bus.stop}`)
             .getResponse();
     }
 };
