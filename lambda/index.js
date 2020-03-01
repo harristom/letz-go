@@ -132,7 +132,9 @@ const NextBusIntentHandler = {
         var cardTitle = busDue.format('hh:mm');
         cardTitle += busDelay ? ' +' + busDelay : '';
         cardTitle += ` 🚌 ${busName} ➡️ ${bus.direction}`;
-        var cardContent = `The bus number ${busName} to ${bus.direction}` + toStop ? ` via ${toStop} ` : '' + `is leaving ${timeRemaining} from ${bus.stop}`;
+        var cardContent = `The bus number ${busName} to ${bus.direction}`;
+        cardContent += toStop ? ` via ${toStop}` : '';
+        cardContent += ` is leaving ${timeRemaining} from ${bus.stop}`;
         return handlerInput.responseBuilder
             .speak(speechText)
             .withShouldEndSession(true)
