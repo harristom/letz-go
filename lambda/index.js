@@ -103,7 +103,7 @@ const NextBusIntentHandler = {
             console.log('Found departures');
             var bus = buses.Departure[0];
             var busName = bus.Product.line ? bus.Product.line : bus.name.trim().replace('Bus','bus');
-            var busScheduled = moment.tz(bus.date + ' ' + bus.time, 'Europe/Luxembourg')
+            var busScheduled = moment.tz(bus.date + ' ' + bus.time, 'Europe/Luxembourg');
             var busDue = bus.rtDate ? moment.tz(bus.rtDate + ' ' + bus.rtTime, 'Europe/Luxembourg') : busScheduled;
             var timeRemaining;
             if (busDue.diff(moment(), 'seconds') < 1) {
