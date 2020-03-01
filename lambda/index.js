@@ -133,7 +133,7 @@ const NextBusIntentHandler = {
             .speak(speechText)
             .withShouldEndSession(true)
             .withSimpleCard(
-                moment.format(busDue, 'hh:mm') + busDelay ? `+${busDelay}` : '' + ` 🚌 ${busName} ➡️ ${bus.direction}`,
+                busDue.format('hh:mm') + busDelay ? `+${busDelay}` : '' + ` 🚌 ${busName} ➡️ ${bus.direction}`,
                 `The bus number ${busName} to ${bus.direction} via ${toStop} is leaving ${timeRemaining} from ${bus.stop}`)
             .getResponse();
     }
