@@ -105,6 +105,7 @@ const NextBusIntentHandler = {
             var busName = bus.Product.line ? bus.Product.line : bus.name.trim().replace('Bus','bus');
             var busScheduled = moment.tz(bus.date + ' ' + bus.time, 'Europe/Luxembourg');
             var busDue = bus.rtDate ? moment.tz(bus.rtDate + ' ' + bus.rtTime, 'Europe/Luxembourg') : busScheduled;
+            var busDelay = busDue.diff(busScheduled, 'minutes');
             var timeRemaining;
             if (busDue.diff(moment(), 'seconds') < 1) {
                 timeRemaining = 'now';
@@ -132,7 +133,7 @@ const NextBusIntentHandler = {
             .speak(speechText)
             .withShouldEndSession(true)
             .withSimpleCard(
-                 ` 🚌 ${busName} ➡️ ${bus.direction}`,
+                moment.format(busDue, 'hh:mm') + busDelay ? `+${busDelay}`: '' + ` 🚌 ${busName} ➡️ ${bus.direction}`,
                 `The bus number ${busName} to ${bus.direction} via ${toStop} is leaving ${timeRemaining} from ${bus.stop}`)
             .getResponse();
     }
