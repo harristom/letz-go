@@ -116,6 +116,12 @@ const NextBusIntentHandler = {
                 speechText = 'Sorry, I couldn\'t recognise your destination. ';
             }
             speechText += `The bus number ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}.`;
+            var cardTitle = busDue.format('hh:mm');
+            cardTitle += busDelay ? ' +' + busDelay : '';
+            cardTitle += ` 🚌 ${busName} ➡️ ${bus.direction}`;
+            var cardContent = `The bus number ${busName} to ${bus.direction}`;
+            cardContent += toStop ? ` via ${toStop}` : '';
+            cardContent += ` is leaving ${timeRemaining} from ${bus.stop}`;
         } else {
             console.log('No departures');
             speechText = `Sorry, I couldn't find any `;
@@ -129,12 +135,6 @@ const NextBusIntentHandler = {
             saveStop(attributesManager, fromStop);
             speechText += ` By the way, from now on, when you ask "when is the next bus" without specifying a departure stop, I'll assume you're asking about buses from ${fromStop}. If you'd ever like me to change your saved stop, just ask.`
         }
-        var cardTitle = busDue.format('hh:mm');
-        cardTitle += busDelay ? ' +' + busDelay : '';
-        cardTitle += ` 🚌 ${busName} ➡️ ${bus.direction}`;
-        var cardContent = `The bus number ${busName} to ${bus.direction}`;
-        cardContent += toStop ? ` via ${toStop}` : '';
-        cardContent += ` is leaving ${timeRemaining} from ${bus.stop}`;
         return handlerInput.responseBuilder
             .speak(speechText)
             .withShouldEndSession(true)
