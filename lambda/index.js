@@ -103,8 +103,8 @@ const NextBusIntentHandler = {
             console.log('Found departures');
             var bus = buses.Departure[0];
             var busName = bus.Product.line ? bus.Product.line : bus.name.trim().replace('Bus','bus');
-            var busDue = bus.rtDate ? bus.rtDate + ' ' + bus.rtTime : bus.date + ' ' + bus.time;
-            busDue = moment.tz(busDue, 'Europe/Luxembourg');
+            var busScheduled = moment.tz(bus.date + ' ' + bus.time, 'Europe/Luxembourg')
+            var busDue = bus.rtDate ? moment.tz(bus.rtDate + ' ' + bus.rtTime, 'Europe/Luxembourg') : busScheduled;
             var timeRemaining;
             if (busDue.diff(moment(), 'seconds') < 1) {
                 timeRemaining = 'now';
@@ -132,7 +132,7 @@ const NextBusIntentHandler = {
             .speak(speechText)
             .withShouldEndSession(true)
             .withSimpleCard(
-                `${bus.time} 🚌 ${busName} ➡️ ${bus.direction}`,
+                 ` 🚌 ${busName} ➡️ ${bus.direction}`,
                 `The bus number ${busName} to ${bus.direction} via ${toStop} is leaving ${timeRemaining} from ${bus.stop}`)
             .getResponse();
     }
