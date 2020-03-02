@@ -116,7 +116,7 @@ const NextBusIntentHandler = {
                 speechText = 'Sorry, I couldn\'t recognise your destination. ';
             }
             speechText += `The bus number ${busName} to ${bus.direction} is leaving ${timeRemaining} from ${bus.stop}.`;
-            var cardTitle = busScheduled.format('hh:mm');
+            var cardTitle = busScheduled.tz('Europe/Luxembourg').format('hh:mm');
             cardTitle += busDelay ? ' +' + busDelay : '';
             cardTitle += ` 🚌 ${busName} ➡️ ${bus.direction}`;
             var cardContent = `The bus number ${busName} to ${bus.direction}`;
