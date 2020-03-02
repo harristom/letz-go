@@ -1,6 +1,6 @@
 {
   "name": "letz-go",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "An Alexa skill to check bus and train times in Luxembourg",
   "main": "index.js",
   "scripts": {
