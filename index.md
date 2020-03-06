@@ -1,4 +1,4 @@
-## Lëtz Go
+## Welcome
 
 Lëtz Go is an Alexa skill to check bus times in Luxembourg. Find the next bus leaving your stop and refine by bus number or destination. With up-to-the-minute expected departure times.
 
