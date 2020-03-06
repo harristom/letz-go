@@ -2,3 +2,4 @@ theme: jekyll-theme-minimal
 title: Lëtz Go
 description: An Alexa skill for checking live bus times in Luxembourg
 show_downloads: false
+logo: APP_ICON_LARGE.png
