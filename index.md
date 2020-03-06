@@ -1,37 +1,13 @@
-## Welcome to GitHub Pages
+## Lëtz Go
 
-You can use the [editor on GitHub](https://github.com/harristom/letz-go/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+Lëtz Go is an Alexa skill to check bus times in Luxembourg. Find the next bus leaving your stop and refine by bus number or destination. With up-to-the-minute expected departure times.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+You can ask for buses from and to any stop in Luxembourg. Save a favourite stop and Alexa will remember it as your departure stop for next time.
 
-### Markdown
+Please bear in mind that Alexa has trouble understanding place names sometimes. If you are finding it hard to get her to understand it may help to pronounce the stop name as though it were an English word.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Installation
 
-```markdown
-Syntax highlighted code block
+Lëtz Go is available in the following marketplaces. More marketplaces and languages are coming soon.
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/harristom/letz-go/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+* [amazon.co.uk (British English)](https://www.amazon.co.uk/dp/B085C3W99K/)
