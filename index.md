@@ -10,4 +10,4 @@ Please bear in mind that Alexa has trouble understanding place names sometimes. 
 
 Lëtz Go is available in the following marketplaces. More marketplaces and languages are coming soon.
 
-* [amazon.co.uk (British English)](https://www.amazon.co.uk/dp/B085C3W99K/)
+* [amazon.co.uk (British English)](https://skills-store.amazon.com/deeplink/dp/B085C3W99K)
