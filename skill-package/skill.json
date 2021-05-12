@@ -1,0 +1,74 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-GB": {
+          "summary": "Check bus times in Luxembourg with real time updates.",
+          "examplePhrases": [
+            "Alexa, ask Letz Go when is the next bus from Hamilius",
+            "Alexa, ask Letz Go to save my stop",
+            "Alexa, ask Letz Go when is the next bus number seven to Joseph Hackin"
+          ],
+          "keywords": [
+            "luxembourg",
+            "bus",
+            "buses",
+            "lux",
+            "bus",
+            "mobiliteit",
+            "public",
+            "transport",
+            "travel",
+            "transport",
+            "grand",
+            "duchy",
+            "ville",
+            "de",
+            "luxembourg",
+            "vdl",
+            "avl",
+            "free",
+            "Lëtzebuerg",
+            "Luxemburg",
+            "transit"
+          ],
+          "name": "Lëtz Go",
+          "description": "Check bus times in Luxembourg. Find the next bus leaving your stop and refine by bus number or destination. With up-to-the-minute expected departure times.\n\nYou can ask for buses from and to any stop in Luxembourg. Save a favourite stop and Alexa will remember it as your departure stop for next time.\n\nPlease bear in mind that Alexa has trouble understanding place names sometimes. If you are finding it hard to get her to understand it may help to pronounce the stop name as though it were an English word.",
+          "smallIconUri": "file://assets/images/en-GB_smallIconUri.png",
+          "largeIconUri": "file://assets/images/en-GB_largeIconUri.png"
+        }
+      },
+      "automaticDistribution": {
+        "sourceLocaleForLanguages": [
+          {
+            "sourceLocale": "en-GB",
+            "language": "en"
+          }
+        ],
+        "isActive": true
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "The valid bus stops are listed on https://travelplanner.mobiliteit.lu/hafas/stboard.exe/en?protocol\u003dhttps:\u0026newrequest\u003dyes\u0026 and are also listed as values for the custom slot type BusStop.",
+      "category": "PUBLIC_TRANSPORTATION",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:us-east-1:219465421222:function:97460fde-d072-4bb5-aa01-96e6b5f57a8e:Release_1"
+        },
+        "interfaces": []
+      }
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "locales": {
+        "en-GB": {}
+      },
+      "containsAds": false,
+      "isExportCompliant": true,
+      "isChildDirected": false,
+      "usesPersonalInfo": false
+    }
+  }
+}
