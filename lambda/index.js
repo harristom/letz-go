@@ -2,6 +2,8 @@ const Alexa = require('ask-sdk-core');
 const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
 const axios = require('axios');
 const moment = require('moment-timezone');
+const API_KEY = '6b432dec-a407-4f60-9447-6f9ccf6555b2';
+const BASE_URL = 'https://cdt.hafas.de/opendata/apiserver';
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -29,9 +31,9 @@ const getBus = async (fromStop, toStop, busNumber) => {
     let maxJourneys;
     if(!busNumber) maxJourneys = 1;
     try {
-        const { data } = await axios.get('http://travelplanner.mobiliteit.lu/restproxy/departureBoard', {
+        const { data } = await axios.get(BASE_URL + '/departureBoard', {
             params: {
-                accessId: 'cdt',
+                accessId: API_KEY,
                 format: 'json',
                 filterEquiv: 0,
                 id: fromStop,
