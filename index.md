@@ -1,6 +1,3 @@
-
-## ⚠️ Unfortunately I am not able to work on the skill at the moment and as a result it is currently broken due to a change in the Mobiliteit API ⚠️
-
 ## Welcome
 
 ![Photo of a bus in Luxembourg](bus.jpg)
